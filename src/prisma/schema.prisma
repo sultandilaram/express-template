@@ -1,0 +1,156 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model nft_creators_master {
+  nft_collector_id Int         @id @default(autoincrement())
+  Nft              nft_master? @relation(fields: [nft_id], references: [nft_id])
+  nft_id           Int?
+  mint_address     String?     @db.VarChar(80)
+  address          String?     @db.VarChar(80)
+  verified         String?     @db.VarChar(5)
+  share            Float?
+  created_at       DateTime    @default(now()) @db.Timestamp(6)
+  last_updated_at  DateTime    @default(now()) @db.Timestamp(6)
+}
+
+model nft_master {
+  nft_id                      Int                   @id @default(autoincrement())
+  mint_address                String?               @unique @db.VarChar(80)
+  mint_owner                  String?               @db.VarChar(80)
+  mint_authority              String?               @db.VarChar(80)
+  verified_collection_address String?               @db.VarChar(80)
+  update_authority            String?               @db.VarChar(80)
+  mint_state                  String?               @db.VarChar(20)
+  amount                      BigInt?
+  max_supply                  Int?
+  current_supply              Int?
+  is_native                   Boolean?
+  decimals                    Int?                  @db.SmallInt
+  collection_name             String?               @db.VarChar(255)
+  collection_family           String?               @db.VarChar(255)
+  symbol                      String?               @db.VarChar(80)
+  name                        String?               @db.VarChar(255)
+  description                 String?               @db.VarChar(255)
+  minted_program              String?               @db.VarChar(80)
+  minted_market_place         String?               @db.VarChar(80)
+  status                      String?               @db.VarChar(20)
+  mint_date                   DateTime?             @db.Timestamp(6)
+  go_live_date                DateTime?             @db.Timestamp(6)
+  master_edition              String?               @db.VarChar(5)
+  metadata_address            String?               @db.VarChar(80)
+  label                       String?               @db.VarChar(255)
+  seller_fee_basis_points     Int?
+  image                       String?               @db.VarChar(500)
+  external_url                String?               @db.VarChar(500)
+  url                         String?               @db.VarChar(500)
+  animation_url               String?               @db.VarChar(500)
+  created_at                  DateTime              @default(now()) @db.Timestamp(6)
+  last_updated_at             DateTime              @default(now()) @db.Timestamp(6)
+  nft_creators_master         nft_creators_master[]
+  nft_trait_master            nft_trait_master[]
+  nft_owners_txn              nft_owners_txn[]
+}
+
+model nft_owners_txn {
+  nft_owners_txn_id Int            @id @default(autoincrement())
+  mint_address      String?        @db.VarChar(80)
+  Nft               nft_master?    @relation(fields: [mint_address], references: [mint_address])
+  token_address     String?        @db.VarChar(80)
+  mint_authority    String?        @db.VarChar(80)
+  txn_time          DateTime?      @db.Timestamp(6)
+  txn_type          String?        @db.VarChar(20)
+  buyer             String?        @db.VarChar(80)
+  Buyer             wallet_master? @relation(name: "walletNftPurchases", fields: [buyer], references: [wallet_address])
+  Seller            wallet_master? @relation(name: "walletNftSales", fields: [seller], references: [wallet_address])
+  seller            String?        @db.VarChar(80)
+  wallet            String?        @db.VarChar(80)
+  price             BigInt?
+  market_place      String?        @db.VarChar(80)
+  created_at        DateTime       @default(now()) @db.Timestamp(6)
+  last_updated_at   DateTime       @default(now()) @db.Timestamp(6)
+}
+
+model nft_trait_master {
+  nft_trait_id    Int         @id @default(autoincrement())
+  nft_id          Int?
+  Nft             nft_master? @relation(fields: [nft_id], references: [nft_id])
+  mint_address    String?     @db.VarChar(80)
+  trait_type      String?     @db.VarChar(255)
+  value           String?     @db.VarChar(255)
+  created_at      DateTime    @default(now()) @db.Timestamp(6)
+  last_updated_at DateTime    @updatedAt @db.Timestamp(6)
+}
+
+model user_master {
+  user_id         Int             @id @default(autoincrement())
+  full_name       String?         @db.VarChar(255)
+  status          String?         @db.VarChar(20)
+  user_type       String?         @db.VarChar(20)
+  created_at      DateTime        @default(now()) @db.Timestamp(6)
+  last_updated_at DateTime        @default(now()) @db.Timestamp(6)
+  json_str        Json?           @db.Json
+  wallet_master   wallet_master[]
+}
+
+model wallet_holdings_master {
+  wallet_address  String    @db.VarChar(80)
+  token_address   String    @db.VarChar(80)
+  account_type    String?   @db.VarChar(20)
+  mint_address    String?   @db.VarChar(80)
+  decimals        Int?      @db.SmallInt
+  balance         BigInt?
+  lamports        BigInt?
+  slot            BigInt?
+  txn_time        DateTime? @db.Timestamp(6)
+  created_at      DateTime  @default(now()) @db.Timestamp(6)
+  last_updated_at DateTime  @default(now()) @db.Timestamp(6)
+
+  @@id([wallet_address, token_address])
+}
+
+model wallet_holdings_txn {
+  wallet_holdings_id Int       @id @default(autoincrement())
+  wallet_address     String?   @db.VarChar(80)
+  from_address       String?   @db.VarChar(80)
+  to_address         String?   @db.VarChar(80)
+  token_address      String?   @db.VarChar(80)
+  txn_type           String?   @db.VarChar(20)
+  lamports           BigInt?
+  decimals           Int?      @db.SmallInt
+  market_place       String?   @db.VarChar(80)
+  token_size         BigInt?
+  txn_time           DateTime? @db.Timestamp(6)
+  authority_address  String?   @db.VarChar(80)
+  created_at         DateTime  @default(now()) @db.Timestamp(6)
+  last_updated_at    DateTime  @default(now()) @db.Timestamp(6)
+}
+
+model wallet_master {
+  wallet_id       Int              @id @default(autoincrement())
+  wallet_address  String?          @unique @db.VarChar(80)
+  Nft             user_master?     @relation(fields: [user_id], references: [user_id])
+  user_id         Int?
+  wallet_type     String?          @db.VarChar(20)
+  twitter_handle  String?          @db.VarChar(80)
+  name            String?          @db.VarChar(80)
+  label           String?          @db.VarChar(255)
+  status          String?          @db.VarChar(20)
+  created_at      DateTime         @default(now()) @db.Timestamp(6)
+  last_updated_at DateTime         @default(now()) @db.Timestamp(6)
+  nftSales        nft_owners_txn[] @relation(name: "walletNftPurchases")
+  nftPurcases     nft_owners_txn[] @relation(name: "walletNftSales")
+}
+
+model sign_in_request {
+  sign_in_request_id Int      @id @default(autoincrement())
+  wallet_address     String?  @unique @db.VarChar(80)
+  nounce             String?  @db.VarChar(80)
+  created_at         DateTime @default(now()) @db.Timestamp(6)
+  last_updated_at    DateTime @updatedAt @db.Timestamp(6)
+}
