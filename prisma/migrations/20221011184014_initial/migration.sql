@@ -1,4 +1,15 @@
 -- CreateTable
+CREATE TABLE "auth_request" (
+    "request_id" SERIAL NOT NULL,
+    "wallet_address" VARCHAR(80) NOT NULL,
+    "nonce" VARCHAR(80) NOT NULL,
+    "created_at" TIMESTAMP(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "last_updated_at" TIMESTAMP(6) NOT NULL,
+
+    CONSTRAINT "auth_request_pkey" PRIMARY KEY ("request_id")
+);
+
+-- CreateTable
 CREATE TABLE "nft_creators_master" (
     "nft_collector_id" SERIAL NOT NULL,
     "nft_id" INTEGER,
@@ -77,7 +88,7 @@ CREATE TABLE "nft_trait_master" (
     "trait_type" VARCHAR(255),
     "value" VARCHAR(255),
     "created_at" TIMESTAMP(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "last_updated_at" TIMESTAMP(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "last_updated_at" TIMESTAMP(6) NOT NULL,
 
     CONSTRAINT "nft_trait_master_pkey" PRIMARY KEY ("nft_trait_id")
 );
@@ -147,6 +158,9 @@ CREATE TABLE "wallet_master" (
 
     CONSTRAINT "wallet_master_pkey" PRIMARY KEY ("wallet_id")
 );
+
+-- CreateIndex
+CREATE UNIQUE INDEX "auth_request_wallet_address_key" ON "auth_request"("wallet_address");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "nft_master_mint_address_key" ON "nft_master"("mint_address");

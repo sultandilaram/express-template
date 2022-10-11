@@ -30,7 +30,7 @@ export const auth_request: Handler = async (
   if (req.method === "POST") {
     const { wallet } = req.body as AuthRequestBody;
 
-    const walletSaved = await prisma.wallet_master.findUnique({
+    const walletSaved = await prisma.wallet_master.findFirst({
       where: { wallet_address: wallet },
     });
 
@@ -50,6 +50,7 @@ export const auth_request: Handler = async (
         },
       });
     } catch (e: any) {
+      console.error(e, "ERROR");
       return response.error(undefined, e.message);
     }
     return response.ok("Auth Session Initiated", {
@@ -89,7 +90,7 @@ export const auth_complete: Handler = async (req: Request, res: Response) => {
     } = req.body as AuthenticateBody;
 
     try {
-      const auth_request = await prisma.auth_request.findUnique({
+      const auth_request = await prisma.auth_request.findFirst({
         where: {
           wallet_address: walletStr,
         },
@@ -103,7 +104,7 @@ export const auth_complete: Handler = async (req: Request, res: Response) => {
         return response.unauthorized("Invalid Signature");
 
       let user: user_master;
-      let wallet = await prisma.wallet_master.findUnique({
+      let wallet = await prisma.wallet_master.findFirst({
         where: {
           wallet_address: walletStr,
         },
@@ -115,7 +116,7 @@ export const auth_complete: Handler = async (req: Request, res: Response) => {
             "This wallet not associated with any user"
           );
 
-        const walletAssociatedUser = await prisma.user_master.findUnique({
+        const walletAssociatedUser = await prisma.user_master.findFirst({
           where: { user_id: wallet.user_id },
         });
 
@@ -158,6 +159,7 @@ export const auth_complete: Handler = async (req: Request, res: Response) => {
         })
       );
     } catch (e: any) {
+      console.error(e, "ERROR");
       return response.error(undefined, e.message);
     }
   }
@@ -182,7 +184,7 @@ export const remove_wallet: Handler = async (req: Request, res: Response) => {
   if (req.method === "POST") {
     const { wallet: walletStr } = req.body as RemoveWalletBody;
 
-    const wallet = await prisma.wallet_master.findUnique({
+    const wallet = await prisma.wallet_master.findFirst({
       where: {
         wallet_address: walletStr,
       },
