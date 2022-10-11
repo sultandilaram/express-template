@@ -1,6 +1,6 @@
 import { Handler, Response, NextFunction } from "express";
 import { Request } from "../types";
-import { ResponseHelper, verify_token } from "../helper";
+import { ResponseHelper, verify_token } from "../helpers";
 import { prisma } from "../config";
 
 export const auth: Handler = async (

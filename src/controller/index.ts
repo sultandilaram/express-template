@@ -1,8 +1,8 @@
 import express from "express";
-import { ResponseHelper } from "../helper";
+import { ResponseHelper } from "../helpers";
 
 /// MODULES
-import auth from "./auth/router";
+import auth from "./auth";
 
 // ROUTER
 const router = express.Router();
@@ -11,8 +11,6 @@ const router = express.Router();
 router.use("/auth", auth);
 
 // HANDLING UNKNOW REQUEST
-router.use(function (req, res, next) {
-  return new ResponseHelper(res).notFound();
-});
+router.use((_, res) => new ResponseHelper(res).notFound("Path not found"));
 
 export default router;
