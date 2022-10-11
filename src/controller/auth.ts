@@ -30,6 +30,8 @@ export const auth_request: Handler = async (
   if (req.method === "POST") {
     const { wallet } = req.body as AuthRequestBody;
 
+    if (!wallet) return response.badRequest("Wallet address is required");
+
     const walletSaved = await prisma.wallet_master.findFirst({
       where: { wallet_address: wallet },
     });
@@ -55,7 +57,7 @@ export const auth_request: Handler = async (
     }
     return response.ok("Auth Session Initiated", {
       overwrite: !!walletSaved,
-      message,
+      message: new TextEncoder().encode(message),
     });
   }
 
@@ -70,6 +72,7 @@ interface AuthenticateBody {
   wallet: string;
   signature: string;
 }
+
 /**
  * @description
  * Verifies the signature
@@ -88,6 +91,9 @@ export const auth_complete: Handler = async (req: Request, res: Response) => {
       wallet: walletStr,
       signature,
     } = req.body as AuthenticateBody;
+
+    if (!walletStr || !signature)
+      return response.badRequest("Wallet address and signature are required");
 
     try {
       const auth_request = await prisma.auth_request.findFirst({
@@ -170,6 +176,7 @@ export const auth_complete: Handler = async (req: Request, res: Response) => {
 interface RemoveWalletBody {
   wallet: string;
 }
+
 /**
  * @description
  * Removes the wallet association for the database
@@ -183,6 +190,8 @@ export const remove_wallet: Handler = async (req: Request, res: Response) => {
 
   if (req.method === "POST") {
     const { wallet: walletStr } = req.body as RemoveWalletBody;
+
+    if (!walletStr) return response.badRequest("Wallet address is required");
 
     const wallet = await prisma.wallet_master.findFirst({
       where: {
