@@ -8,7 +8,7 @@ import {
 } from "../helpers";
 import { prisma } from "../config";
 import { user_master } from "@prisma/client";
-import { bypass_auth } from "../middlewares";
+import { auth, bypass_auth } from "../middlewares";
 
 interface AuthRequestBody {
   wallet: string;
@@ -16,9 +16,8 @@ interface AuthRequestBody {
 
 /**
  * @description
- * check if wallet is registered with any account
- * if yes, then check if wallet exists in auth_request
- * generate nonce and save/update it in auth_request along with wallet address
+ * Generates a random 32 bytes nonce along with a message to sign
+ * updates nonce in database along with wallet address
  * @request { wallet: string }
  * @response { success: boolean, code: number, message: string }
  */
@@ -72,10 +71,12 @@ interface AuthenticateBody {
 }
 /**
  * @description
- * get object from auth_request with wallet_address
- * verify signature with nonce
+ * Verifies the signature
+ * IF the wallet is already associated with a user THEN find the user
+ * ELSE IF the user is already authenticated THEN associate new wallet with the user
+ * ELSE create a new user and associate the wallet with the user
  * @request { wallet: string, signature: string }
- * @response jwt
+ * @response jwt{ user_id: number }
  */
 export const auth_complete: Handler = async (req: Request, res: Response) => {
   const response = new ResponseHelper(res);
@@ -108,7 +109,7 @@ export const auth_complete: Handler = async (req: Request, res: Response) => {
         },
       });
 
-      if (wallet) {
+      if (wallet && wallet.status === "active") {
         if (!wallet.user_id)
           return response.unauthorized(
             "This wallet not associated with any user"
@@ -133,19 +134,22 @@ export const auth_complete: Handler = async (req: Request, res: Response) => {
         if (!randomUser) return response.unauthorized("User not found");
         user = randomUser;
 
-        wallet = await prisma.wallet_master.create({
-          data: {
+        wallet = await prisma.wallet_master.upsert({
+          where: {
+            wallet_address: walletStr,
+          },
+          create: {
             wallet_address: walletStr,
             user_id: user.user_id,
+            status: "active",
+          },
+          update: {
+            wallet_address: walletStr,
+            user_id: user.user_id,
+            status: "active",
           },
         });
       }
-
-      await prisma.auth_request.delete({
-        where: {
-          wallet_address: walletStr,
-        },
-      });
 
       return response.ok(
         "Authorized",
@@ -161,9 +165,62 @@ export const auth_complete: Handler = async (req: Request, res: Response) => {
   return response.methodNotAllowed();
 };
 
+interface RemoveWalletBody {
+  wallet: string;
+}
+/**
+ * @description
+ * Removes the wallet association for the database
+ * IF and only IF there are more than one wallet associated with the user
+ * @request { wallet: string }
+ */
+export const remove_wallet: Handler = async (req: Request, res: Response) => {
+  const response = new ResponseHelper(res);
+
+  if (!req.user) return response.unauthorized();
+
+  if (req.method === "POST") {
+    const { wallet: walletStr } = req.body as RemoveWalletBody;
+
+    const wallet = await prisma.wallet_master.findUnique({
+      where: {
+        wallet_address: walletStr,
+      },
+    });
+
+    const nWalletsOwned = await prisma.wallet_master.count({
+      where: {
+        user_id: req.user.user_id,
+      },
+    });
+
+    if (!wallet) return response.unauthorized("Wallet not found");
+    if (wallet.user_id !== req.user.user_id)
+      return response.unauthorized("Wallet not associated with the user");
+    if (nWalletsOwned == 0)
+      return response.unauthorized("No wallet associated with the user");
+    if (nWalletsOwned == 1)
+      return response.unauthorized("Can't remove the last wallet");
+
+    await prisma.wallet_master.update({
+      where: {
+        wallet_address: walletStr,
+      },
+      data: {
+        status: "inactive",
+      },
+    });
+
+    return response.ok("Wallet removed");
+  }
+
+  return response.methodNotAllowed();
+};
+
 const router = Router();
 
 router.post("/request", auth_request);
 router.post("/complete", bypass_auth, auth_complete);
+router.post("/remove", auth, remove_wallet);
 
 export default router;
