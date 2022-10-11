@@ -1,39 +1,57 @@
-import jwt from "jsonwebtoken";
-import {
-  Handler,
-  Response,
-  Request as ExpressRequest,
-  NextFunction,
-} from "express";
-import ResponseHandler from "../helper/response";
+import { Handler, Response, NextFunction } from "express";
+import { Request } from "../types";
+import { ResponseHelper, verify_token } from "../helper";
+import { prisma } from "../config";
 
-interface Request extends ExpressRequest {
-  user?: any;
-}
-
-export const auth: Handler = (
+export const auth: Handler = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
+  const response = new ResponseHelper(res);
+
   console.log(req.headers.authorization, "AUTHORIZATION");
   if (
     req.headers.authorization &&
     req.headers.authorization.split(" ")[0] === "Bearer"
   ) {
-    const token = req.headers.authorization.split(" ")[1];
+    const decoded = verify_token(req.headers.authorization.split(" ")[1]);
+    if (!decoded) return response.unauthorized("Invalid Token");
 
-    /// Verify token
-    try {
-      const decoded = jwt.verify(token, process.env.JWT_SECRET || "secret");
-      req.user = decoded;
-      next();
-    } catch (err) {
-      return res.json(ResponseHandler.un_autorized(null, "TOKEN"));
-    }
+    req.user =
+      (await prisma.user_master.findUnique({
+        where: {
+          user_id: decoded.user_id,
+        },
+      })) || undefined;
+
+    next();
   } else {
-    return res.json(
-      ResponseHandler.un_autorized(null, "No token, authorization denied")
-    );
+    return response.unauthorized("Token not found");
   }
+};
+
+export const bypass_auth: Handler = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const response = new ResponseHelper(res);
+
+  if (
+    req.headers.authorization &&
+    req.headers.authorization.split(" ")[0] === "Bearer"
+  ) {
+    const decoded = verify_token(req.headers.authorization.split(" ")[1]);
+    if (!decoded) return response.unauthorized("Invalid Token");
+
+    req.user =
+      (await prisma.user_master.findUnique({
+        where: {
+          user_id: decoded.user_id,
+        },
+      })) || undefined;
+  }
+
+  next();
 };

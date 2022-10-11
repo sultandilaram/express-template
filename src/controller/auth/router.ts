@@ -1,18 +1,19 @@
 import express from "express";
-import ResponseHandler from "../../helper/response";
+import { ResponseHelper } from "../../helper";
 
 // CONTROLLERS
+import * as handlers from ".";
 // import { confirm_wallet, register, login, verify_token, add_wallet } from ".";
-import { auth_request } from ".";
-
-// AUTH
-import { auth } from "../../middleware/auth";
+import { bypass_auth } from "../../middleware/auth";
 
 // ROUTER
 const router = express.Router();
 
+router.post("/auth", bypass_auth, handlers.authenticate);
+router.post("/auth/request", handlers.auth_request);
+
 // HANDLING ROUTES
-router.post("/auth_request/:wallet", auth_request);
+// router.post("/auth_request/:wallet", auth_request);
 
 // router.get("/confirm_wallet/:wallet", confirm_wallet);
 // router.post("/login", login);
@@ -22,7 +23,7 @@ router.post("/auth_request/:wallet", auth_request);
 
 // HANDLING UNKNOW REQUEST
 router.use(function (req, res, next) {
-  return res.json(ResponseHandler.not_found(null, "INVALID ROUTE!"));
+  return new ResponseHelper(res).notFound();
 });
 
 export default router;

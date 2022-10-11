@@ -1,4 +1,15 @@
+import { user_master } from "@prisma/client";
+import { Request as ExpressRequest } from "express";
+
 type int = number;
+
+export interface Request extends ExpressRequest {
+  user?: user_master;
+}
+
+export interface Token {
+  user_id: number;
+}
 
 export type nft_creators_master_type = {
   nft_collector_id: int;

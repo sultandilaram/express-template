@@ -1,5 +1,5 @@
 import express from "express";
-import ResponseHandler from "../helper/response";
+import { ResponseHelper } from "../helper";
 
 /// MODULES
 import auth from "./auth/router";
@@ -12,7 +12,7 @@ router.use("/auth", auth);
 
 // HANDLING UNKNOW REQUEST
 router.use(function (req, res, next) {
-  return res.json(ResponseHandler.not_found(null, "ROUTE NOT FOUND!"));
+  return new ResponseHelper(res).notFound();
 });
 
 export default router;
