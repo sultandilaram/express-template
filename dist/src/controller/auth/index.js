@@ -8,94 +8,175 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.register = exports.confirm_wallet = exports.login = void 0;
+exports.auth_request = void 0;
+const nonce_1 = require("./../../helper/nonce");
 const client_1 = require("@prisma/client");
-const jwt_1 = require("../../helper/jwt");
-const nonce_1 = require("../../helper/nonce");
-const response_1 = __importDefault(require("../../helper/response"));
 const prisma = new client_1.PrismaClient();
-const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const auth_request = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const body = req.body;
-    if (!body.wallet_address || !body.signature) {
-        const nonce = (0, nonce_1.create_nonce)();
-        return res
-            .header("nonce", nonce)
-            .json(response_1.default.success(null, "NONCE SEND!"));
-    }
-    else {
-        const user = yield prisma.user_master.findUnique({
-            where: {
-                user_id: body.id,
-            },
-        });
-        if (user) {
-            const token = (0, jwt_1.generate_token)({
-                id: user.user_id,
-                wallet: body.wallet_address,
-                signature: body.signature,
-            });
-            return res.json(response_1.default.success({ token }, "LOGIN SUCCESS!"));
-        }
-        return res.json(response_1.default.not_found(null, "USER NOT FOUND!"));
-    }
-});
-exports.login = login;
-const confirm_wallet = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { wallet } = req.params;
     try {
-        const data = yield prisma.wallet_master.findUnique({
+        const nonce = (0, nonce_1.create_nonce)();
+        const wallet = req.params.wallet;
+        const wallet_data = yield prisma.wallet_master.findUnique({
             where: {
                 wallet_address: wallet,
             },
         });
-        if (data) {
-            return res.json(response_1.default.success(data, "WALLET FOUND"));
-        }
-        else {
-            return res.json(response_1.default.error("WALLET NOT FOUND", "WALLET"));
-        }
-    }
-    catch (e) {
-        console.error(e, "ERROR");
-        return res.json(response_1.default.error(e, "WALLET"));
-    }
-});
-exports.confirm_wallet = confirm_wallet;
-const register = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const body = req.body;
-    const wallet_address = req.body.wallet_address;
-    delete body.wallet_address;
-    if (!body) {
-        return res.json(response_1.default.error("BODY NOT FOUND", "NFT MASTER"));
-    }
-    try {
-        const data = yield prisma.user_master.create({
-            data: body,
-        });
-        if (data) {
-            const wallets = yield prisma.wallet_master.create({
+        if (wallet_data) {
+            const auth_request = yield prisma.auth_request.create({
                 data: {
-                    wallet_address: wallet_address,
-                    user_id: data.user_id,
+                    nonce: nonce,
+                    wallet_master_id: wallet_data.id,
                 },
             });
-            if (wallets) {
-                return res.json(response_1.default.success(data, "CREATED SUCCESSFULLY"));
-            }
-            return res.json(response_1.default.error(data, "USER CREATED BUT WALLET NOT CREATED"));
-        }
-        else {
-            console.error(data, "ERROR");
-            return res.json(response_1.default.error("ERROR", "NFT MASTER"));
+            return res.json({
+                success: true,
+                data: {
+                    nonce: nonce,
+                },
+                message: "AUTH REQUEST CREATED",
+                code: 200,
+            });
         }
     }
     catch (e) {
         console.error(e, "ERROR");
-        return res.json(response_1.default.error(e, "INSERT NFT MASTER"));
     }
 });
-exports.register = register;
+exports.auth_request = auth_request;
+// export const login: Handler = async (req: Request, res: Response) => {
+//   const body = req.body;
+//   if (!body.wallet_address || !body.signature) {
+//     const nonce = create_nonce();
+//     await
+//     return res.json(ResponseHandler.success({ nonce }, "INONCE SEND!"));
+//   } else {
+//     const user = await prisma.user_master.findUnique({
+//       where: {
+//         user_id: parseInt(body.user_id),
+//       },
+//     });
+//     if (user) {
+//       const token = generate_token({
+//         id: user.user_id,
+//         wallet: body.wallet_address,
+//         signature: body.signature,
+//       });
+//       return res.json(
+//         ResponseHandler.success({ token, user }, "LOGIN SUCCESS!")
+//       );
+//     }
+//     return res.json(ResponseHandler.not_found(null, "USER NOT FOUND!"));
+//   }
+// };
+// export const confirm_wallet: Handler = async (req: Request, res: Response) => {
+//   const { wallet } = req.params;
+//   try {
+//     const data = await prisma.wallet_master.findUnique({
+//       where: {
+//         wallet_address: wallet,
+//       },
+//     });
+//     if (data) {
+//       return res.json(ResponseHandler.success(data, "WALLET FOUND"));
+//     } else {
+//       return res.json(ResponseHandler.error("WALLET NOT FOUND", "WALLET"));
+//     }
+//   } catch (e) {
+//     console.error(e, "ERROR");
+//     return res.json(ResponseHandler.error(e, "WALLET"));
+//   }
+// };
+// export const register: Handler = async (req: Request, res: Response) => {
+//   const body = req.body;
+//   const wallet_address = req.body.wallet_address;
+//   delete body.wallet_address;
+//   if (!body) {
+//     return res.json(ResponseHandler.error("BODY NOT FOUND", "NFT MASTER"));
+//   }
+//   try {
+//     const data = await prisma.user_master.create({
+//       data: body,
+//     });
+//     if (data) {
+//       const wallets = await prisma.wallet_master.create({
+//         data: {
+//           wallet_address: wallet_address,
+//           user_id: data.user_id,
+//         },
+//       });
+//       if (wallets) {
+//         return res.json(ResponseHandler.success(data, "CREATED SUCCESSFULLY"));
+//       }
+//       return res.json(
+//         ResponseHandler.error(data, "USER CREATED BUT WALLET NOT CREATED")
+//       );
+//     } else {
+//       console.error(data, "ERROR");
+//       return res.json(ResponseHandler.error("ERROR", "NFT MASTER"));
+//     }
+//   } catch (e) {
+//     console.error(e, "ERROR");
+//     return res.json(ResponseHandler.error(e, "INSERT NFT MASTER"));
+//   }
+// };
+// export const verify_token: Handler = async (req: Request, res: Response) => {
+//   try {
+//     if (req.user) {
+//       const user = await prisma.user_master.findUnique({
+//         where: {
+//           user_id: req.user.id,
+//         },
+//       });
+//       if (user) {
+//         return res.json(
+//           ResponseHandler.success(
+//             {
+//               ...req.user,
+//               user,
+//             },
+//             "TOKEN VERIFIED!"
+//           )
+//         );
+//       }
+//     }
+//   } catch (e) {
+//     console.error(e, "VERIFING TOKEN");
+//     return res.json(ResponseHandler.error(e, "VERIFING TOKEN"));
+//   }
+//   return res.json(ResponseHandler.error("TOKEN NOT VERIFIED!", "TOKEN"));
+// };
+// export const add_wallet: Handler = async (req: Request, res: Response) => {
+//   const body = req.body;
+//   if (!body.wallet_address || !body.signature) {
+//     const nonce = create_nonce();
+//     return res.json(ResponseHandler.success({ nonce }, "NONCE SEND!"));
+//   } else {
+//     const user = await prisma.user_master.findUnique({
+//       where: {
+//         user_id: parseInt(body.user_id),
+//       },
+//     });
+//     const wallet = await prisma.wallet_master.create({
+//       data: {
+//         wallet_address: body.wallet_address,
+//         user_id: parseInt(body.user_id),
+//       },
+//     });
+//     if (user) {
+//       const token = generate_token({
+//         id: user.user_id,
+//         wallet: wallet.wallet_address,
+//         signature: body.signature,
+//       });
+//       return res.json(
+//         ResponseHandler.success(
+//           { token, user, wallet },
+//           "Wallet Added SUCCESS!"
+//         )
+//       );
+//     }
+//     return res.json(ResponseHandler.not_found(null, "USER NOT FOUND!"));
+//   }
+// };
