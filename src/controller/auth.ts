@@ -1,12 +1,11 @@
 import { Handler, Response, Router } from "express";
-import { user_master } from "@prisma/client";
-import axios from "axios";
 import { Request, User } from "../types";
 import {
   ResponseHelper,
   generate_message,
   verify_signature,
   create_token,
+  subscribe_wallet,
 } from "../helpers";
 import { prisma } from "../config";
 import { auth, bypass_auth } from "../middlewares";
@@ -70,6 +69,7 @@ type AuthenticateBodyUser = {
 };
 interface AuthenticateBody {
   user?: AuthenticateBodyUser;
+  action: "login" | "register";
   wallet: string;
   signature: string;
 }
@@ -88,13 +88,16 @@ const auth_confirm: Handler = async (req: Request, res: Response) => {
 
   if (req.method === "POST") {
     const {
+      action,
       user: bodyUser,
       wallet: walletStr,
       signature,
     } = req.body as AuthenticateBody;
 
-    if (!walletStr || !signature)
-      return response.badRequest("Wallet address and signature are required");
+    if (!action || !walletStr || !signature)
+      return response.badRequest(
+        "Action, Wallet address and signature are required"
+      );
 
     try {
       const auth_request = await prisma.auth_request.findFirst({
@@ -111,77 +114,66 @@ const auth_confirm: Handler = async (req: Request, res: Response) => {
         return response.unauthorized("Invalid Signature");
 
       let user: User;
-      let wallet = await prisma.wallet_master.findFirst({
-        where: {
-          wallet_address: walletStr,
-        },
-      });
-      const subscribe: boolean = !wallet;
-
-      if (wallet && wallet.status === "active") {
-        if (!wallet.user_id)
-          return response.unauthorized(
-            "This wallet not associated with any user"
-          );
-
-        const walletAssociatedUser = await prisma.user_master.findFirst({
-          where: { user_id: wallet.user_id },
-          include: { wallet_master: true },
-        });
-
-        if (!walletAssociatedUser)
-          return response.unauthorized(
-            "This wallet not associated with any user"
-          );
-
-        user = walletAssociatedUser;
-      } else {
-        const randomUser =
-          req.user ||
-          (bodyUser
-            ? await prisma.user_master.create({ data: bodyUser })
-            : undefined);
-        if (!randomUser) return response.unauthorized("User not found");
-        user = randomUser;
-
-        wallet = await prisma.wallet_master.upsert({
-          where: {
-            wallet_address: walletStr,
-          },
-          create: {
-            wallet_address: walletStr,
-            user_id: user.user_id,
-            status: "active",
-          },
-          update: {
-            wallet_address: walletStr,
-            user_id: user.user_id,
-            status: "active",
-          },
-        });
-
-        user.wallet_master = await prisma.wallet_master.findMany({
-          where: {
-            user_id: user.user_id,
-          },
-        });
-
-        if (subscribe)
-          await axios.put(
-            "https://monitor-api-nicbatbx3a-ue.a.run.app/subscription",
-            {
-              subscription_id: 203,
-              query: {
-                addlist: [wallet.wallet_address],
+      switch (action) {
+        case "login":
+          const userTemp = await prisma.user_master.findFirst({
+            where: {
+              wallet_master: {
+                some: {
+                  wallet_address: walletStr,
+                  status: "active",
+                },
               },
             },
-            {
-              headers: {
-                Authorization:
-                  "Bearer jk-F1BOoQdMOh1Mn_VOpUIi-xXzWe7NKgt48gWjKhZg",
-                "Content-Type": "application/json",
-              },
-            }
+          });
+          if (!userTemp) return response.unauthorized("Invalid wallet");
+          user = userTemp;
+          break;
+
+        case "register":
+          const reqUser =
+            req.user ||
+            (bodyUser
+              ? await prisma.user_master.create({ data: bodyUser })
+              : undefined);
+          if (!reqUser) return response.unauthorized("User not found");
+          user = reqUser;
+
+          const isWalletRegistered = await prisma.wallet_master.findFirst({
+            where: {
+              wallet_address: walletStr,
+            },
+          });
+
+          const wallet = await prisma.wallet_master.upsert({
+            where: {
+              wallet_address: walletStr,
+            },
+            create: {
+              wallet_address: walletStr,
+              user_id: user.user_id,
+              status: "active",
+            },
+            update: {
+              wallet_address: walletStr,
+              user_id: user.user_id,
+              status: "active",
+            },
+          });
+
+          if (!isWalletRegistered && wallet.wallet_address)
+            subscribe_wallet(wallet.wallet_address);
+
+          user.wallet_master = await prisma.wallet_master.findMany({
+            where: {
+              user_id: user.user_id,
+            },
+          });
+
+          break;
+        default:
+          return response.badRequest(
+            "Action must be from ['login', 'register']"
           );
       }
 
@@ -190,7 +182,6 @@ const auth_confirm: Handler = async (req: Request, res: Response) => {
           user_id: user.user_id,
         }),
         user,
-        wallets: user.wallet_master,
       });
     } catch (e: any) {
       console.error("[ERROR] auth_complete", e);

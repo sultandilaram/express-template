@@ -4,6 +4,7 @@ import * as mplMetadata from "@metaplex-foundation/mpl-token-metadata";
 import { connection, prisma } from "../config";
 import { ResponseHelper } from "../helpers";
 import { Request } from "../types";
+import { bypass_auth } from "../middlewares";
 
 /**
  * @description
@@ -23,10 +24,7 @@ import { Request } from "../types";
 const fetch_holdings: Handler = async (req: Request, res: Response) => {
   const response = new ResponseHelper(res);
 
-  if (req.method === "GET") {
-    if (!req.user)
-      return response.notFound("Global data is yet to be implemented");
-
+  if (req.user) {
     const holdings = await prisma.wallet_holdings_master.findMany({
       where: {
         Holder: {
@@ -96,13 +94,13 @@ const fetch_holdings: Handler = async (req: Request, res: Response) => {
     ).filter((collection) => collection !== null) as mplMetadata.Metadata[];
 
     return response.ok("Holdings", { holdings, collections });
+  } else {
+    return response.unauthorized("User not found");
   }
-
-  return response.methodNotAllowed();
 };
 
 const router = Router();
 
-router.post("/holdings", fetch_holdings);
+router.get("/holdings", bypass_auth, fetch_holdings);
 
 export default router;
