@@ -50,40 +50,40 @@ const fetch_holdings: Handler = async (req: Request, res: Response) => {
       },
     });
 
-    // const db_collections = await prisma.nft_master.groupBy({
-    //   where: {
-    //     holders: {
-    //       some: {
-    //         balance: {
-    //           gt: 0,
-    //         },
-    //         Holder: {
-    //           user_id: req.user.user_id,
-    //         },
-    //       },
-    //     },
-    //   },
-    //   by: ["verified_collection_address"],
-    // });
-
-    const collections = await prisma.collection_master.findMany({
+    const collections = await prisma.nft_master.groupBy({
       where: {
-        nft_master: {
+        holders: {
           some: {
-            holders: {
-              some: {
-                balance: {
-                  gt: 0,
-                },
-                Holder: {
-                  user_id: req.user.user_id,
-                },
-              },
+            balance: {
+              gt: 0,
+            },
+            Holder: {
+              user_id: req.user.user_id,
             },
           },
         },
       },
+      by: ["verified_collection_address", "collection_name"],
     });
+
+    // const collections = await prisma.collection_master.findMany({
+    //   where: {
+    //     nft_master: {
+    //       some: {
+    //         holders: {
+    //           some: {
+    //             balance: {
+    //               gt: 0,
+    //             },
+    //             Holder: {
+    //               user_id: req.user.user_id,
+    //             },
+    //           },
+    //         },
+    //       },
+    //     },
+    //   },
+    // });
 
     return response.ok("Holdings", { holdings, collections });
   } else {

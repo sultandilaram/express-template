@@ -60,14 +60,16 @@ export default async function () {
     const data = {
       collection_address: metadata.mint.toString(),
       ...metadata.uriData,
-      floor_price: 0,
     };
-    prisma.collection_master.upsert({
-      where: {
-        collection_address: data.collection_address,
-      },
-      create: data,
-      update: data,
-    });
+    // prisma.collection_master.upsert({
+    //   where: {
+    //     collection_address: data.collection_address,
+    //   },
+    //   create: {
+    //     ...data,
+    //     floor_price: 0,
+    //   },
+    //   update: data,
+    // });
   });
 }
