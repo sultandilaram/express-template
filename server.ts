@@ -4,6 +4,7 @@ import cors from "cors";
 import routes from "./src/controller";
 import morgan from "morgan";
 import { ResponseHelper } from "./src/helpers";
+import crons from "./src/crons";
 
 // COLORIZE CONSOLE
 const colors = require("colors");
@@ -41,6 +42,9 @@ app.use(express.json({ limit: "50mb" }));
 
 /// ROUTES
 app.use("/", routes);
+
+// SCHEDULE CRON JOBS
+crons();
 
 // STATING SERVER
 app.listen(port, () => {

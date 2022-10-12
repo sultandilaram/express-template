@@ -50,48 +50,40 @@ const fetch_holdings: Handler = async (req: Request, res: Response) => {
       },
     });
 
-    const db_collections = await prisma.nft_master.groupBy({
+    // const db_collections = await prisma.nft_master.groupBy({
+    //   where: {
+    //     holders: {
+    //       some: {
+    //         balance: {
+    //           gt: 0,
+    //         },
+    //         Holder: {
+    //           user_id: req.user.user_id,
+    //         },
+    //       },
+    //     },
+    //   },
+    //   by: ["verified_collection_address"],
+    // });
+
+    const collections = await prisma.collection_master.findMany({
       where: {
-        holders: {
+        nft_master: {
           some: {
-            balance: {
-              gt: 0,
-            },
-            Holder: {
-              user_id: req.user.user_id,
+            holders: {
+              some: {
+                balance: {
+                  gt: 0,
+                },
+                Holder: {
+                  user_id: req.user.user_id,
+                },
+              },
             },
           },
         },
       },
-      by: ["verified_collection_address"],
     });
-
-    const collections = (
-      await Promise.all(
-        db_collections.map(async (collection) => {
-          if (!collection.verified_collection_address) return null;
-
-          const [metadataAddress] = await web3.PublicKey.findProgramAddress(
-            [
-              Buffer.from("metadata", "utf8"),
-              mplMetadata.PROGRAM_ID.toBuffer(),
-              new web3.PublicKey(
-                collection.verified_collection_address
-              ).toBuffer(),
-            ],
-            mplMetadata.PROGRAM_ID
-          );
-          try {
-            return await mplMetadata.Metadata.fromAccountAddress(
-              connection,
-              metadataAddress
-            );
-          } catch {
-            return null;
-          }
-        })
-      )
-    ).filter((collection) => collection !== null) as mplMetadata.Metadata[];
 
     return response.ok("Holdings", { holdings, collections });
   } else {

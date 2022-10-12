@@ -52,7 +52,7 @@ const auth_request: Handler = async (
         },
       });
     } catch (e: any) {
-      console.error("[ERROR] auth_request", e);
+      console.error("[API] auth_request", e);
       return response.error(undefined, e.message);
     }
     return response.ok("Auth Session Initiated", {
@@ -125,6 +125,9 @@ const auth_confirm: Handler = async (req: Request, res: Response) => {
                 },
               },
             },
+            include: {
+              wallet_master: true,
+            },
           });
           if (!userTemp) return response.unauthorized("Invalid wallet");
           user = userTemp;
@@ -184,7 +187,7 @@ const auth_confirm: Handler = async (req: Request, res: Response) => {
         user,
       });
     } catch (e: any) {
-      console.error("[ERROR] auth_complete", e);
+      console.error("[API] auth_complete", e);
       return response.error(undefined, e.message);
     }
   }
@@ -267,7 +270,7 @@ const remove_wallet: Handler = async (req: Request, res: Response) => {
 
       return response.ok("Wallet removed");
     } catch (e: any) {
-      console.error("[ERROR] remove_wallet", e);
+      console.error("[API] remove_wallet", e);
       return response.error(undefined, e.message);
     }
   }
