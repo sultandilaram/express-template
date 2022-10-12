@@ -1,11 +1,5 @@
 import { Response } from "express";
-
-interface IResponse<T = any> {
-  success: boolean;
-  code: number;
-  message: string;
-  data?: T;
-}
+import { IResponse } from "../types";
 
 export class ResponseHelper<T> {
   constructor(private res: Response) {

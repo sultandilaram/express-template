@@ -50,6 +50,7 @@ export const bypass_auth: Handler = async (
         where: {
           user_id: decoded.user_id,
         },
+        include: { wallet_master: true },
       })) || undefined;
   }
 

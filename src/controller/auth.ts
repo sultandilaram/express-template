@@ -1,5 +1,7 @@
 import { Handler, Response, Router } from "express";
-import { Request } from "../types";
+import { user_master } from "@prisma/client";
+import axios from "axios";
+import { Request, User } from "../types";
 import {
   ResponseHelper,
   generate_message,
@@ -7,7 +9,6 @@ import {
   create_token,
 } from "../helpers";
 import { prisma } from "../config";
-import { user_master } from "@prisma/client";
 import { auth, bypass_auth } from "../middlewares";
 
 interface AuthRequestBody {
@@ -21,7 +22,7 @@ interface AuthRequestBody {
  * @request { wallet: string }
  * @response { success: boolean, code: number, message: string }
  */
-export const auth_request: Handler = async (
+const auth_request: Handler = async (
   req: Request,
   res: Response
 ): Promise<Response> => {
@@ -52,12 +53,12 @@ export const auth_request: Handler = async (
         },
       });
     } catch (e: any) {
-      console.error(e, "ERROR");
+      console.error("[ERROR] auth_request", e);
       return response.error(undefined, e.message);
     }
     return response.ok("Auth Session Initiated", {
       overwrite: !!walletSaved,
-      message: new TextEncoder().encode(message),
+      message,
     });
   }
 
@@ -79,10 +80,10 @@ interface AuthenticateBody {
  * IF the wallet is already associated with a user THEN find the user
  * ELSE IF the user is already authenticated THEN associate new wallet with the user
  * ELSE create a new user and associate the wallet with the user
- * @request { wallet: string, signature: string }
- * @response jwt{ user_id: number }
+ * @request { wallet: string, signature: string, user?: { full_name: string } }
+ * @response { token: jwt{ user_id: number }, user: user_master, wallets: wallet_master[] }
  */
-export const auth_complete: Handler = async (req: Request, res: Response) => {
+const auth_confirm: Handler = async (req: Request, res: Response) => {
   const response = new ResponseHelper(res);
 
   if (req.method === "POST") {
@@ -109,12 +110,13 @@ export const auth_complete: Handler = async (req: Request, res: Response) => {
       if (!verify_signature(signature, walletStr, auth_request.nonce))
         return response.unauthorized("Invalid Signature");
 
-      let user: user_master;
+      let user: User;
       let wallet = await prisma.wallet_master.findFirst({
         where: {
           wallet_address: walletStr,
         },
       });
+      const subscribe: boolean = !wallet;
 
       if (wallet && wallet.status === "active") {
         if (!wallet.user_id)
@@ -124,6 +126,7 @@ export const auth_complete: Handler = async (req: Request, res: Response) => {
 
         const walletAssociatedUser = await prisma.user_master.findFirst({
           where: { user_id: wallet.user_id },
+          include: { wallet_master: true },
         });
 
         if (!walletAssociatedUser)
@@ -156,18 +159,66 @@ export const auth_complete: Handler = async (req: Request, res: Response) => {
             status: "active",
           },
         });
+
+        user.wallet_master = await prisma.wallet_master.findMany({
+          where: {
+            user_id: user.user_id,
+          },
+        });
+
+        if (subscribe)
+          await axios.put(
+            "https://monitor-api-nicbatbx3a-ue.a.run.app/subscription",
+            {
+              subscription_id: 203,
+              query: {
+                addlist: [wallet.wallet_address],
+              },
+            },
+            {
+              headers: {
+                Authorization:
+                  "Bearer jk-F1BOoQdMOh1Mn_VOpUIi-xXzWe7NKgt48gWjKhZg",
+                "Content-Type": "application/json",
+              },
+            }
+          );
       }
 
-      return response.ok(
-        "Authorized",
-        create_token({
+      return response.ok("Authorized", {
+        token: create_token({
           user_id: user.user_id,
-        })
-      );
+        }),
+        user,
+        wallets: user.wallet_master,
+      });
     } catch (e: any) {
-      console.error(e, "ERROR");
+      console.error("[ERROR] auth_complete", e);
       return response.error(undefined, e.message);
     }
+  }
+
+  return response.methodNotAllowed();
+};
+
+/**
+ * @descriptions
+ * Fetch all the wallets of the user
+ * @response { wallets: wallet_master[] }
+ */
+const fetch_wallets: Handler = async (req: Request, res: Response) => {
+  const response = new ResponseHelper(res);
+
+  if (!req.user) return response.unauthorized();
+
+  if (req.method === "GET") {
+    const wallets = await prisma.wallet_master.findMany({
+      where: {
+        user_id: req.user.user_id,
+      },
+    });
+
+    return response.ok("Wallets", { wallets });
   }
 
   return response.methodNotAllowed();
@@ -183,7 +234,7 @@ interface RemoveWalletBody {
  * IF and only IF there are more than one wallet associated with the user
  * @request { wallet: string }
  */
-export const remove_wallet: Handler = async (req: Request, res: Response) => {
+const remove_wallet: Handler = async (req: Request, res: Response) => {
   const response = new ResponseHelper(res);
 
   if (!req.user) return response.unauthorized();
@@ -213,16 +264,21 @@ export const remove_wallet: Handler = async (req: Request, res: Response) => {
     if (nWalletsOwned == 1)
       return response.unauthorized("Can't remove the last wallet");
 
-    await prisma.wallet_master.update({
-      where: {
-        wallet_address: walletStr,
-      },
-      data: {
-        status: "inactive",
-      },
-    });
+    try {
+      await prisma.wallet_master.update({
+        where: {
+          wallet_address: walletStr,
+        },
+        data: {
+          status: "inactive",
+        },
+      });
 
-    return response.ok("Wallet removed");
+      return response.ok("Wallet removed");
+    } catch (e: any) {
+      console.error("[ERROR] remove_wallet", e);
+      return response.error(undefined, e.message);
+    }
   }
 
   return response.methodNotAllowed();
@@ -231,7 +287,8 @@ export const remove_wallet: Handler = async (req: Request, res: Response) => {
 const router = Router();
 
 router.post("/request", auth_request);
-router.post("/complete", bypass_auth, auth_complete);
+router.post("/confirm", bypass_auth, auth_confirm);
+router.post("/wallets", auth, fetch_wallets);
 router.post("/remove", auth, remove_wallet);
 
 export default router;
