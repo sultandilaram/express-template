@@ -3,7 +3,6 @@ import dotenv from "dotenv";
 import cors from "cors";
 import routes from "./src/controller";
 import morgan from "morgan";
-import { ResponseHelper } from "./src/helpers";
 import crons from "./src/crons";
 
 // COLORIZE CONSOLE
