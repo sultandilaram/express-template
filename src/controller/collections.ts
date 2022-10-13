@@ -105,7 +105,12 @@ const fetch_holdings: Handler = async (req: Request, res: Response) => {
         },
       },
       include: {
-        nft_master: true,
+        nft_master: {
+          include: {
+            nft_creators_master: true,
+            nft_trait_master: true,
+          },
+        },
       },
     });
 
