@@ -151,3 +151,8 @@ export class ResponseHelper<T> {
       : this.res.status(code).json(response);
   }
 }
+
+export const serialize = (obj: any) =>
+  JSON.stringify(obj, (key, value) =>
+    typeof value === "bigint" ? value.toString() : value
+  );
