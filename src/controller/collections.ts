@@ -124,6 +124,10 @@ interface FetchActivityParams {
   collection_id?: string;
 }
 
+interface FetchActivityBody {
+  traits?: { name: string; type: string; values: string[] }[];
+}
+
 /**
  * @description
  * Fetch all NFT activities of the collection
@@ -132,11 +136,12 @@ interface FetchActivityParams {
 const fetch_activity: Handler = async (req: Request, res: Response) => {
   const response = new ResponseHelper(res);
   const { collection_id } = req.params as FetchActivityParams;
+  const { traits } = req.body as FetchActivityBody;
   if (!collection_id) return response.badRequest("Collection Id not provided");
   try {
     const history = await hyperspace.getProjectHistory({
       condition: {
-        projects: [{ project_id: collection_id }],
+        projects: [{ project_id: collection_id, attributes: traits }],
         actionTypes: [
           MarketPlaceActionEnum.Transaction,
           MarketPlaceActionEnum.Listing,
