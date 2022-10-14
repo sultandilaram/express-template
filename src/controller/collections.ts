@@ -4,7 +4,10 @@ import { hyperspace, prisma } from "../config";
 import { serialize, ResponseHelper } from "../helpers";
 import { Request } from "../types";
 import { bypass_auth } from "../middlewares";
-import { MarketPlaceActionEnum } from "hyperspace-client-js/dist/sdk";
+import {
+  MarketPlaceActionEnum,
+  SortOrderEnum,
+} from "hyperspace-client-js/dist/sdk";
 
 /**
  * @description
@@ -113,12 +116,28 @@ const fetch_holdings: Handler = async (req: Request, res: Response) => {
 
     return response.ok("Holdings", serialize(collections));
   } else {
-    return response.unauthorized("User not found");
+    const collections = await hyperspace.getProjects({
+      orderBy: {
+        field_name: "market_cap",
+        sort_order: SortOrderEnum.Desc,
+      },
+      paginationInfo: {
+        page_size: 10,
+      },
+    });
+    if (!collections.getProjectStats.project_stats)
+      return response.notFound("No Collections Found");
+
+    return response.ok(
+      "Collections",
+      collections.getProjectStats.project_stats
+    );
   }
 };
 
 interface FetchActivityParams {
   collection_id?: string;
+  n?: string;
 }
 
 interface FetchActivityBody {
@@ -131,6 +150,7 @@ interface FetchActivityBody {
  * @example
  * params {
  *  collection_id: string
+ *  n: number
  * }
  * request {
  *  traits: [
@@ -161,11 +181,11 @@ interface FetchActivityBody {
  */
 const fetch_activity: Handler = async (req: Request, res: Response) => {
   const response = new ResponseHelper(res);
-  const { collection_id } = req.params as FetchActivityParams;
+  const { collection_id, n } = req.params as FetchActivityParams;
   const { traits } = req.body as FetchActivityBody;
   if (!collection_id) return response.badRequest("Collection Id not provided");
   try {
-    const history = await hyperspace.getProjectHistory({
+    const activity = await hyperspace.getProjectHistory({
       condition: {
         projects: [{ project_id: collection_id, attributes: traits }],
         actionTypes: [
@@ -174,11 +194,15 @@ const fetch_activity: Handler = async (req: Request, res: Response) => {
           MarketPlaceActionEnum.Delisting,
         ],
       },
+      paginationInfo: {
+        page_number: n ? parseInt(n) : 1,
+        page_size: 20,
+      },
     });
 
     return response.ok(
-      "History",
-      history.getProjectHistory.market_place_snapshots
+      "Activity",
+      activity.getProjectHistory.market_place_snapshots
     );
   } catch (e) {
     console.error("[API] fetch_activity", e);
@@ -188,7 +212,7 @@ const fetch_activity: Handler = async (req: Request, res: Response) => {
 
 const router = Router();
 
-router.post("/activity/:collection_id", fetch_activity);
-router.get("/holdings", bypass_auth, fetch_holdings);
+router.get("/", bypass_auth, fetch_holdings);
+router.post("/:collection_id/activity/:n?", fetch_activity);
 
 export default router;
