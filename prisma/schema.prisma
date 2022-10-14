@@ -9,7 +9,7 @@ datasource db {
 
 model wallet_daily_pnl_summary {
   txn_date        DateTime? @db.Date
-  user_id         Int
+  user_id         Int?
   wallet_address  String    @db.VarChar(80)
   token_address   String?   @db.VarChar(80)
   open_balance    Float?
@@ -23,7 +23,7 @@ model wallet_daily_pnl_summary {
   created_at      DateTime  @default(now()) @db.Timestamp(6)
   last_updated_at DateTime  @default(now()) @db.Timestamp(6)
 
-  @@unique([wallet_address, user_id, created_at])
+  @@unique([wallet_address, created_at])
 }
 
 model nft_creators_master {
@@ -47,7 +47,11 @@ model nft_master {
   mint_owner                  String?   @db.VarChar(80)
   mint_authority              String?   @db.VarChar(80)
   verified_collection_address String?   @db.VarChar(80)
-  collection_id               String?   @db.VarChar(80) // proposed.
+  collection_id               String?   @db.VarChar(80)
+  rank_est                    Int?
+  moonrank                    Int?
+  howrare_rank                Int?
+  rarity_est                  Float?
   update_authority            String?   @db.VarChar(80)
   mint_state                  String?   @db.VarChar(20)
   amount                      BigInt?
@@ -164,10 +168,10 @@ model auth_request {
   last_updated_at DateTime @updatedAt @db.Timestamp(6)
 }
 
-model collection_address_project_id_resolver {
-  collection_address String @id @unique
-  project_id         String
-}
+// model collection_address_project_id_resolver {
+//   collection_address String @id @unique
+//   project_id         String
+// }
 
 // ========================
 model collection_floor_stats {
