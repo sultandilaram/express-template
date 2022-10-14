@@ -9,16 +9,13 @@ import { MarketPlaceActionEnum } from "hyperspace-client-js/dist/sdk";
 /**
  * @description
  * Fetch all the NFTs held by the user's wallets along with the collections metadata
- * @response {
- *  holdings: (wallet_holdings_master & {
- *      Nft: (nft_master & {
- *        nft_creators_master: nft_creators_master[];
- *        nft_trait_master: nft_trait_master[];
- *      }) | null;
- *    })[]
- *
- *  collections: Metadata[]
- *  }
+ * @example
+ * response (collection_master & {
+ *  nft_master: (nft_master & {
+ *      nft_creators_master: nft_creators_master[];
+ *      nft_trait_master: nft_trait_master[];
+ *  })[];
+ * })[]
  */
 const fetch_holdings: Handler = async (req: Request, res: Response) => {
   const response = new ResponseHelper(res);
@@ -125,13 +122,42 @@ interface FetchActivityParams {
 }
 
 interface FetchActivityBody {
-  traits?: { name: string; type: string; values: string[] }[];
+  traits?: { name: string; type: "CATEGORY" | "NUMERIC"; values: string[] }[];
 }
 
 /**
  * @description
  * Fetch all NFT activities of the collection
- * @params collection_id
+ * @example
+ * params {
+ *  collection_id: string
+ * }
+ * request {
+ *  traits: [
+ *   {
+ *    name: string,
+ *    type: "CATEGORY" | "NUMERIC",
+ *    values: string[]
+ *   }
+ * }
+ * response {
+ *      block_timestamp?: number | null;
+ *      escrow_address?: string | null;
+ *      signature?: string | null;
+ *      seller_address?: string | null;
+ *      buyer_address?: string | null;
+ *      type?: MarketPlaceActionEnum | null;
+ *      marketplace_program_id?: string | null;
+ *      marketplace_instance_id?: string | null;
+ *      fee?: number | null;
+ *      amount?: number | null;
+ *      seller_referral_fee?: number | null;
+ *      seller_referral_address?: string | null;
+ *      buyer_referral_address?: string | null;
+ *      buyer_referral_fee?: number | null;
+ *      metadata?: any | null;
+ *      price?: number | null;
+ *  }
  */
 const fetch_activity: Handler = async (req: Request, res: Response) => {
   const response = new ResponseHelper(res);

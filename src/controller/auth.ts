@@ -18,8 +18,14 @@ interface AuthRequestBody {
  * @description
  * Generates a random 32 bytes nonce along with a message to sign
  * updates nonce in database along with wallet address
- * @request { wallet: string }
- * @response { success: boolean, code: number, message: string }
+ * @example
+ * request {
+ *  wallet: string;
+ * }
+ * response {
+ *  overwrite: boolean,
+ *  message: string
+ * }
  */
 const auth_request: Handler = async (
   req: Request,
@@ -80,8 +86,19 @@ interface AuthenticateBody {
  * IF the wallet is already associated with a user THEN find the user
  * ELSE IF the user is already authenticated THEN associate new wallet with the user
  * ELSE create a new user and associate the wallet with the user
- * @request { wallet: string, signature: string, user?: { full_name: string } }
- * @response { token: jwt{ user_id: number }, user: user_master, wallets: wallet_master[] }
+ * @example
+ * request {
+ *  wallet: string,
+ *  signature: string,
+ *  user?: {
+ *    full_name: string
+ *  }
+ * }
+ * response {
+ *  token: jwt{ user_id: number },
+ *  user: user_master,
+ *  wallets: wallet_master[]
+ * }
  */
 const auth_confirm: Handler = async (req: Request, res: Response) => {
   const response = new ResponseHelper(res);
@@ -200,7 +217,10 @@ const auth_confirm: Handler = async (req: Request, res: Response) => {
 /**
  * @descriptions
  * Fetch all the wallets of the user
- * @response { wallets: wallet_master[] }
+ * @example
+ * response {
+ *  wallets: wallet_master[]
+ * }
  */
 const fetch_wallets: Handler = async (req: Request, res: Response) => {
   const response = new ResponseHelper(res);
@@ -228,7 +248,10 @@ interface RemoveWalletBody {
  * @description
  * Removes the wallet association for the database
  * IF and only IF there are more than one wallet associated with the user
- * @request { wallet: string }
+ * @example
+ * request {
+ *  wallet: string
+ * }
  */
 const remove_wallet: Handler = async (req: Request, res: Response) => {
   const response = new ResponseHelper(res);
