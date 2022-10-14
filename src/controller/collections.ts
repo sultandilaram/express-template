@@ -111,6 +111,12 @@ const fetch_holdings: Handler = async (req: Request, res: Response) => {
             nft_trait_master: true,
           },
         },
+        collection_floor_stats: {
+          orderBy: {
+            txn_date: "desc",
+          },
+          take: 1,
+        },
       },
     });
 
@@ -128,10 +134,39 @@ const fetch_holdings: Handler = async (req: Request, res: Response) => {
     if (!collections.getProjectStats.project_stats)
       return response.notFound("No Collections Found");
 
-    return response.ok(
-      "Collections",
-      collections.getProjectStats.project_stats
+    const maped_collections = collections.getProjectStats.project_stats.map(
+      (x) => ({
+        collection_id: x.project_id,
+        json_str: x.project,
+        nft_master: [],
+        collection_floor_stats: [
+          {
+            collection_id: x.project_id,
+            txn_date: new Date(),
+            market_cap: x.market_cap,
+            volume_7day: x.volume_7day,
+            volume_1day: x.volume_1day,
+            volume_1day_change: x.volume_1day_change,
+            floor_price: x.floor_price,
+            floor_price_1day_change: x.floor_price_1day_change,
+            average_price: x.average_price,
+            max_price: x.max_price,
+            supply: x.project?.supply,
+            num_of_token_holders: x.num_of_token_holders,
+            twitter_followers: x.twitter_followers,
+            discord_member: null,
+            average_price_1day_change: x.average_price_1day_change,
+            num_of_token_listed: x.num_of_token_listed,
+            percentage_of_token_listed: x.percentage_of_token_listed,
+            rank: null,
+            created_at: new Date(),
+            last_updated_at: new Date(),
+          },
+        ],
+      })
     );
+
+    return response.ok("Collections", maped_collections);
   }
 };
 

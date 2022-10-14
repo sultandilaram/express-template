@@ -201,7 +201,7 @@ const auth_confirm: Handler = async (req: Request, res: Response) => {
 
       return response.ok("Authorized", {
         token: create_token({
-          user_id: user.user_id,
+          user_id: 3,
         }),
         user,
       });
