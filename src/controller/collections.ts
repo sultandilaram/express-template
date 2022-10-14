@@ -162,7 +162,7 @@ const fetch_activity: Handler = async (req: Request, res: Response) => {
 
 const router = Router();
 
-router.get("/activity/:collection_id", fetch_activity);
+router.post("/activity/:collection_id", fetch_activity);
 router.get("/holdings", bypass_auth, fetch_holdings);
 
 export default router;
