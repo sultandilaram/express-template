@@ -9,8 +9,6 @@ export const auth: Handler = async (
   next: NextFunction
 ) => {
   const response = new ResponseHelper(res);
-
-  console.log(req.headers.authorization, "AUTHORIZATION");
   if (
     req.headers.authorization &&
     req.headers.authorization.split(" ")[0] === "Bearer"
@@ -23,6 +21,7 @@ export const auth: Handler = async (
         where: {
           user_id: decoded.user_id,
         },
+        include: { wallet_master: true },
       })) || undefined;
 
     next();

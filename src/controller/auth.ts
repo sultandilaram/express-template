@@ -221,18 +221,14 @@ const auth_confirm: Handler = async (req: Request, res: Response) => {
 const auth_refresh: Handler = async (req: Request, res) => {
   const response = new ResponseHelper(res);
 
-  if (req.method === "POST") {
-    if (!req.user) return response.unauthorized();
+  if (!req.user) return response.unauthorized();
 
-    return response.ok("Refreshed", {
-      token: create_token({
-        user_id: req.user.user_id,
-      }),
-      user: req.user,
-    });
-  }
-
-  return response.methodNotAllowed();
+  return response.ok("Refreshed", {
+    token: create_token({
+      user_id: req.user.user_id,
+    }),
+    user: req.user,
+  });
 };
 
 /**
@@ -328,7 +324,7 @@ const router = Router();
 
 router.post("/request", auth_request);
 router.post("/confirm", bypass_auth, auth_confirm);
-router.post("/refresh", auth, auth_refresh);
+router.get("/refresh", auth, auth_refresh);
 router.post("/wallets", auth, fetch_wallets);
 router.post("/remove", auth, remove_wallet);
 
