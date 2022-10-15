@@ -220,7 +220,7 @@ const fetch_activity: Handler = async (req: Request, res: Response) => {
   const { traits } = req.body as FetchActivityBody;
   if (!collection_id) return response.badRequest("Collection Id not provided");
   try {
-    const activity = await hyperspace.getProjectHistory({
+    const data = await hyperspace.getProjectHistory({
       condition: {
         projects: [{ project_id: collection_id, attributes: traits }],
         actionTypes: [
@@ -235,10 +235,10 @@ const fetch_activity: Handler = async (req: Request, res: Response) => {
       },
     });
 
-    return response.ok(
-      "Activity",
-      activity.getProjectHistory.market_place_snapshots
-    );
+    const activity = data.getProjectHistory.market_place_snapshots;
+    // const paginationInfo = data.getProjectHistory.pagination_info
+
+    return response.ok("Activity", activity);
   } catch (e) {
     console.error("[API] fetch_activity", e);
     return response.error("Something went wrong", e);
