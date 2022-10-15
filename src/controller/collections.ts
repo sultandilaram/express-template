@@ -9,78 +9,28 @@ import {
   SortOrderEnum,
 } from "hyperspace-client-js/dist/sdk";
 
+interface FetchCollectionsParams {
+  n?: string;
+}
+
 /**
  * @description
- * Fetch all the NFTs held by the user's wallets along with the collections metadata
+ * Fetch all the collections
  * @example
+ * params { n?: string }
  * response (collection_master & {
- *  nft_master: (nft_master & {
- *      nft_creators_master: nft_creators_master[];
- *      nft_trait_master: nft_trait_master[];
- *  })[];
+ *  collection_floor_stats: collection_floor_stats[];
  * })[]
  */
-const fetch_holdings: Handler = async (req: Request, res: Response) => {
+const fetch_collections: Handler = async (req: Request, res: Response) => {
   const response = new ResponseHelper(res);
 
+  const { n } = req.params as FetchCollectionsParams;
+
+  const page_number = n ? parseInt(n) : 1;
+  const page_size = 10;
+
   if (req.user) {
-    // const holdings = await prisma.wallet_holdings_master.findMany({
-    //   where: {
-    //     Holder: {
-    //       user_id: req.user.user_id,
-    //     },
-    //     balance: {
-    //       gt: 0,
-    //     },
-    //     Nft: {
-    //       NOT: {
-    //         // verified_collection_address: null,
-    //         collection_name: null,
-    //       },
-    //     },
-    //   },
-    //   include: {
-    //     Nft: {
-    //       include: {
-    //         nft_creators_master: true,
-    //         nft_trait_master: true,
-    //       },
-    //     },
-    //   },
-    // });
-
-    // const collections = await prisma.nft_master.groupBy({
-    //   where: {
-    //     collection_name: {
-    //       not: null,
-    //     },
-    //     holders: {
-    //       some: {
-    //         balance: {
-    //           gt: 0,
-    //         },
-    //         Holder: {
-    //           user_id: req.user.user_id,
-    //         },
-    //       },
-    //     },
-    //   },
-    //   by: ["verified_collection_address", "collection_name"],
-    // });
-
-    // const collection_addresses = collections
-    //   .map((item) => item.collection_name)
-    //   .filter((item) => !!item) as string[];
-    // console.log("collection_addresses", collection_addresses);
-    // const project_ids = await resolveCollectionProjectId(collection_addresses);
-
-    // const data_tmp = _.values(
-    //   _.extend(
-    //     _.indexBy(collections, "collection_name"),
-    //     _.indexBy(project_ids, "collection_address")
-    //   )
-    // );
-
     const collections = await prisma.collection_master.findMany({
       where: {
         nft_master: {
@@ -105,12 +55,6 @@ const fetch_holdings: Handler = async (req: Request, res: Response) => {
         },
       },
       include: {
-        nft_master: {
-          include: {
-            nft_creators_master: true,
-            nft_trait_master: true,
-          },
-        },
         collection_floor_stats: {
           orderBy: {
             txn_date: "desc",
@@ -118,9 +62,11 @@ const fetch_holdings: Handler = async (req: Request, res: Response) => {
           take: 1,
         },
       },
+      skip: page_size * (page_number - 1),
+      take: page_size,
     });
 
-    return response.ok("Holdings", serialize(collections));
+    return response.ok("Collections", serialize(collections));
   } else {
     const collections = await hyperspace.getProjects({
       orderBy: {
@@ -128,7 +74,8 @@ const fetch_holdings: Handler = async (req: Request, res: Response) => {
         sort_order: SortOrderEnum.Desc,
       },
       paginationInfo: {
-        page_size: 10,
+        page_size,
+        page_number,
       },
     });
     if (!collections.getProjectStats.project_stats)
@@ -168,6 +115,61 @@ const fetch_holdings: Handler = async (req: Request, res: Response) => {
 
     return response.ok("Collections", maped_collections);
   }
+};
+
+interface FetchNftsParams {
+  collection_id?: string;
+  n?: string;
+}
+
+/**
+ *
+ * @example
+ * params { collection_id, n }
+ * response (nft_master & {
+ *  nft_creators_master: nft_creators_master[];
+ *  nft_trait_master: nft_trait_master[];
+ * })[]
+ */
+const fetch_nfts: Handler = async (req: Request, res: Response) => {
+  const response = new ResponseHelper(res);
+
+  const { collection_id, n } = req.params as FetchNftsParams;
+
+  const page_size = 10;
+  const page_number = n ? parseInt(n) : 1;
+
+  if (!collection_id)
+    return response.badRequest("Collection Id is not provided");
+
+  if (!req.user) return response.unauthorized();
+
+  const nfts = await prisma.nft_master.findMany({
+    where: {
+      collection_id,
+      collection_name: {
+        not: null,
+      },
+      holders: {
+        some: {
+          balance: {
+            gt: 0,
+          },
+          Holder: {
+            user_id: req.user.user_id,
+          },
+        },
+      },
+    },
+    include: {
+      nft_creators_master: true,
+      nft_trait_master: true,
+    },
+    skip: page_size * (page_number - 1),
+    take: page_size,
+  });
+
+  return response.ok("Holdings", nfts);
 };
 
 interface FetchActivityParams {
@@ -247,7 +249,8 @@ const fetch_activity: Handler = async (req: Request, res: Response) => {
 
 const router = Router();
 
-router.get("/", bypass_auth, fetch_holdings);
+router.get("/:n?", bypass_auth, fetch_collections);
+router.post("/:collection_id/nfts/:n?", fetch_nfts);
 router.post("/:collection_id/activity/:n?", fetch_activity);
 
 export default router;
