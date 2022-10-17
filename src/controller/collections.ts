@@ -251,8 +251,8 @@ const fetch_activity: Handler = async (req: Request, res: Response) => {
 
 const router = Router();
 
-router.get("/:n?", bypass_auth, fetch_collections);
-router.get("/:collection_id/nfts/:n?", auth, fetch_nfts);
-router.post("/:collection_id/activity/:n?", fetch_activity);
+router.get("/:n?/:p?", bypass_auth, fetch_collections);
+router.get("/:collection_id/nfts/:n?/:p?", auth, fetch_nfts);
+router.post("/:collection_id/activity/:n?/:p?", fetch_activity);
 
 export default router;
