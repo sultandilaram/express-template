@@ -170,6 +170,8 @@ const fetch_nfts: Handler = async (req: Request, res: Response) => {
     take: page_size,
   });
 
+  console.log(nfts.length, "Holdings");
+
   return response.ok("Holdings", serialize(nfts));
 };
 
