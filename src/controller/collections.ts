@@ -11,6 +11,7 @@ import {
 
 interface FetchCollectionsParams {
   n?: string;
+  p?: string;
 }
 
 /**
@@ -25,10 +26,10 @@ interface FetchCollectionsParams {
 const fetch_collections: Handler = async (req: Request, res: Response) => {
   const response = new ResponseHelper(res);
 
-  const { n } = req.params as FetchCollectionsParams;
+  const { n, p } = req.params as FetchCollectionsParams;
 
+  const page_size = p ? parseInt(p) : 10;
   const page_number = n ? parseInt(n) : 1;
-  const page_size = 10;
 
   if (req.user) {
     const collections = await prisma.collection_master.findMany({
@@ -119,6 +120,7 @@ const fetch_collections: Handler = async (req: Request, res: Response) => {
 interface FetchNftsParams {
   collection_id?: string;
   n?: string;
+  p?: string;
 }
 
 /**
@@ -133,9 +135,9 @@ interface FetchNftsParams {
 const fetch_nfts: Handler = async (req: Request, res: Response) => {
   const response = new ResponseHelper(res);
 
-  const { collection_id, n } = req.params as FetchNftsParams;
+  const { collection_id, n, p } = req.params as FetchNftsParams;
 
-  const page_size = 10;
+  const page_size = p ? parseInt(p) : 10;
   const page_number = n ? parseInt(n) : 1;
 
   if (!collection_id)
@@ -174,6 +176,7 @@ const fetch_nfts: Handler = async (req: Request, res: Response) => {
 interface FetchActivityParams {
   collection_id?: string;
   n?: string;
+  p?: string;
 }
 
 interface FetchActivityBody {
@@ -217,7 +220,7 @@ interface FetchActivityBody {
  */
 const fetch_activity: Handler = async (req: Request, res: Response) => {
   const response = new ResponseHelper(res);
-  const { collection_id, n } = req.params as FetchActivityParams;
+  const { collection_id, n, p } = req.params as FetchActivityParams;
   const { traits } = req.body as FetchActivityBody;
   if (!collection_id) return response.badRequest("Collection Id not provided");
   try {
@@ -232,7 +235,7 @@ const fetch_activity: Handler = async (req: Request, res: Response) => {
       },
       paginationInfo: {
         page_number: n ? parseInt(n) : 1,
-        page_size: 20,
+        page_size: p ? parseInt(p) : 20,
       },
     });
 
