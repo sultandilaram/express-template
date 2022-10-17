@@ -85,7 +85,6 @@ const fetch_collections: Handler = async (req: Request, res: Response) => {
       (x) => ({
         collection_id: x.project_id,
         json_str: x.project,
-        nft_master: [],
         collection_floor_stats: [
           {
             collection_id: x.project_id,
