@@ -168,7 +168,7 @@ const fetch_nfts: Handler = async (req: Request, res: Response) => {
     take: page_size,
   });
 
-  return response.ok("Holdings", nfts);
+  return response.ok("Holdings", serialize(nfts));
 };
 
 interface FetchActivityParams {
