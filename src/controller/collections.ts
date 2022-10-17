@@ -3,7 +3,7 @@ import _ from "underscore";
 import { hyperspace, prisma } from "../config";
 import { serialize, ResponseHelper } from "../helpers";
 import { Request } from "../types";
-import { bypass_auth } from "../middlewares";
+import { auth, bypass_auth } from "../middlewares";
 import {
   MarketPlaceActionEnum,
   SortOrderEnum,
@@ -249,7 +249,7 @@ const fetch_activity: Handler = async (req: Request, res: Response) => {
 const router = Router();
 
 router.get("/:n?", bypass_auth, fetch_collections);
-router.get("/:collection_id/nfts/:n?", fetch_nfts);
+router.get("/:collection_id/nfts/:n?", auth, fetch_nfts);
 router.post("/:collection_id/activity/:n?", fetch_activity);
 
 export default router;
