@@ -6,6 +6,10 @@ export class ResponseHelper<T> {
     this.res = res;
   }
 
+  public static send<T>(res: Response): ResponseHelper<T> {
+    return new ResponseHelper(res);
+  }
+
   public ok(message?: string, data?: T, res?: Response): Response {
     const response: IResponse<T> = {
       success: true,
