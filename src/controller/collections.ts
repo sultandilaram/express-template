@@ -284,9 +284,20 @@ const fetch_pnl: Handler = async (req: Request, res: Response) => {
   if (!req.user.wallet_master || !req.user.wallet_master.length)
     return response.ok("Pnl", []);
 
-  const data =
-    await prisma.$queryRaw`SELECT * FROM daily_value_unrealized_view WHERE user_id = ${req.user.user_id}`;
-  return response.ok("Pnl", serialize(data));
+  const history_unrealized =
+    await prisma.$queryRaw`SELECT difference, txn_date FROM daily_value_unrealized_view WHERE user_id = ${req.user.user_id} ORDER BY txn_date ASC`;
+  const sum_unrealized =
+    await prisma.$queryRaw`SELECT SUM(difference) FROM daily_value_unrealized_view WHERE user_id = ${req.user.user_id}`;
+
+  return response.ok(
+    "Pnl",
+    serialize({
+      unrealized: {
+        sum: (sum_unrealized as any)[0].sum,
+        history: history_unrealized,
+      },
+    })
+  );
 };
 
 const router = Router();
