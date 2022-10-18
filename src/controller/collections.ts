@@ -62,6 +62,11 @@ const fetch_collections: Handler = async (req: Request, res: Response) => {
           },
           take: 1,
         },
+        _count: {
+          select: {
+            nft_master: true,
+          },
+        },
       },
       skip: page_size * (page_number - 1),
       take: page_size,
