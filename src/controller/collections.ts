@@ -17,11 +17,6 @@ interface FetchCollectionsParams {
 /**
  * @description
  * Fetch all the collections
- * @example
- * params { n?: string }
- * response (collection_master & {
- *  collection_floor_stats: collection_floor_stats[];
- * })[]
  */
 const fetch_collections: Handler = async (req: Request, res: Response) => {
   const response = new ResponseHelper(res);
@@ -129,13 +124,8 @@ interface FetchNftsParams {
 }
 
 /**
- *
- * @example
- * params { collection_id, n }
- * response (nft_master & {
- *  nft_creators_master: nft_creators_master[];
- *  nft_trait_master: nft_trait_master[];
- * })[]
+ * @description
+ * Fetch Nfts held by the user's wallets in a particular collection
  */
 const fetch_nfts: Handler = async (req: Request, res: Response) => {
   const response = new ResponseHelper(res);
@@ -214,37 +204,6 @@ interface FetchActivityBody {
 /**
  * @description
  * Fetch all NFT activities of the collection
- * @example
- * params {
- *  collection_id: string
- *  n: number
- * }
- * request {
- *  traits: [
- *   {
- *    name: string,
- *    type: "CATEGORY" | "NUMERIC",
- *    values: string[]
- *   }
- * }
- * response {
- *      block_timestamp?: number | null;
- *      escrow_address?: string | null;
- *      signature?: string | null;
- *      seller_address?: string | null;
- *      buyer_address?: string | null;
- *      type?: MarketPlaceActionEnum | null;
- *      marketplace_program_id?: string | null;
- *      marketplace_instance_id?: string | null;
- *      fee?: number | null;
- *      amount?: number | null;
- *      seller_referral_fee?: number | null;
- *      seller_referral_address?: string | null;
- *      buyer_referral_address?: string | null;
- *      buyer_referral_fee?: number | null;
- *      metadata?: any | null;
- *      price?: number | null;
- *  }
  */
 const fetch_activity: Handler = async (req: Request, res: Response) => {
   const response = new ResponseHelper(res);
@@ -277,6 +236,10 @@ const fetch_activity: Handler = async (req: Request, res: Response) => {
   }
 };
 
+/**
+ * @description
+ * Fetch the profit and loss data of the user's wallets
+ */
 const fetch_pnl: Handler = async (req: Request, res: Response) => {
   const response = new ResponseHelper(res);
 
@@ -300,9 +263,50 @@ const fetch_pnl: Handler = async (req: Request, res: Response) => {
   );
 };
 
+interface UpdateUserPriceBody {
+  nft_owners_txn_id: number;
+  user_edited_price: number;
+}
+
+/**
+ * @description
+ * Update the purchase cost of an NFT
+ */
+const update_user_price: Handler = async (req: Request, res: Response) => {
+  const response = new ResponseHelper(res);
+  const { nft_owners_txn_id, user_edited_price } =
+    req.body as UpdateUserPriceBody;
+
+  if (!req.user) return response.unauthorized();
+
+  const nft_owners_txn = await prisma.nft_owners_txn.findFirst({
+    where: {
+      nft_owners_txn_id,
+      Buyer: {
+        user_id: req.user.user_id,
+      },
+    },
+  });
+
+  if (!nft_owners_txn)
+    return response.notFound("NFT sale transaction not found!");
+
+  const updated = await prisma.nft_owners_txn.update({
+    where: {
+      nft_owners_txn_id,
+    },
+    data: {
+      user_edited_price,
+    },
+  });
+
+  return response.ok("Updated", serialize(updated));
+};
+
 const router = Router();
 
 router.get("/pnl", auth, fetch_pnl);
+router.post("/update_user_price", auth, update_user_price);
 router.get("/:n?/:p?", bypass_auth, fetch_collections);
 router.get("/:collection_id/nfts/:n?/:p?", auth, fetch_nfts);
 router.post("/:collection_id/activity/:n?/:p?", fetch_activity);
