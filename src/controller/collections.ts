@@ -150,6 +150,8 @@ const fetch_nfts: Handler = async (req: Request, res: Response) => {
 
   if (!req.user) return response.unauthorized();
 
+  if (!req.user.wallet_master) return response.notFound("Wallet not found");
+
   const nfts = await prisma.nft_master.findMany({
     where: {
       collection_id,
@@ -170,12 +172,31 @@ const fetch_nfts: Handler = async (req: Request, res: Response) => {
     include: {
       nft_creators_master: true,
       nft_trait_master: true,
+      holders: {
+        where: {
+          balance: {
+            gt: 0,
+          },
+          Holder: {
+            user_id: req.user.user_id,
+          },
+        },
+      },
+      nft_owners_txn: {
+        where: {
+          Buyer: {
+            user_id: req.user.user_id,
+          },
+        },
+        orderBy: {
+          txn_time: "desc",
+        },
+        take: 1,
+      },
     },
     skip: page_size * (page_number - 1),
     take: page_size,
   });
-
-  console.log(nfts.length, "Holdings");
 
   return response.ok("Holdings", serialize(nfts));
 };
@@ -256,8 +277,21 @@ const fetch_activity: Handler = async (req: Request, res: Response) => {
   }
 };
 
+const fetch_pnl: Handler = async (req: Request, res: Response) => {
+  const response = new ResponseHelper(res);
+
+  if (!req.user) return response.unauthorized();
+  if (!req.user.wallet_master || !req.user.wallet_master.length)
+    return response.ok("Pnl", []);
+
+  const data =
+    await prisma.$queryRaw`SELECT * FROM daily_value_unrealized_view WHERE user_id = ${req.user.user_id}`;
+  return response.ok("Pnl", serialize(data));
+};
+
 const router = Router();
 
+router.get("/pnl", auth, fetch_pnl);
 router.get("/:n?/:p?", bypass_auth, fetch_collections);
 router.get("/:collection_id/nfts/:n?/:p?", auth, fetch_nfts);
 router.post("/:collection_id/activity/:n?/:p?", fetch_activity);

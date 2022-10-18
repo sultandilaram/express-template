@@ -85,9 +85,8 @@ model nft_master {
 
   nft_creators_master nft_creators_master[]
   nft_trait_master    nft_trait_master[]
-  // nft_owners_txn      nft_owners_txn[]
+  nft_owners_txn      nft_owners_txn[]
   holders             wallet_holdings_master[]
-  // collection_master   collection_master?       @relation(fields: [verified_collection_address], references: [collection_address])
   collection_master   collection_master?       @relation(fields: [collection_id], references: [collection_id])
 }
 
@@ -150,9 +149,10 @@ model wallet_master {
   last_updated_at DateTime @default(now()) @db.Timestamp(6)
 
   User           user_master?             @relation(fields: [user_id], references: [user_id])
-  // nftSales       nft_owners_txn[]         @relation(name: "walletNftPurchases")
-  // nftPurcases    nft_owners_txn[]         @relation(name: "walletNftSales")
+  // nftSales       nft_owners_txn[]         @relation(name: "walletNftSales")
+  nftPurchases   nft_owners_txn[]         @relation(name: "walletNftPurchases")
   walletHoldings wallet_holdings_master[] @relation(name: "walletHoldings")
+  // walletTxn      wallet_holdings_txn[]    @relation(name: "walletTxn")
 
   @@unique([wallet_address, user_id], map: "unique_wallet_user_id")
 }
@@ -252,8 +252,8 @@ model nft_owners_txn {
   created_at        DateTime  @default(now()) @db.Timestamp(6)
   last_updated_at   DateTime  @default(now()) @db.Timestamp(6)
 
-  // Nft    nft_master?    @relation(fields: [mint_address], references: [mint_address])
-  // Buyer  wallet_master? @relation(name: "walletNftPurchases", fields: [buyer], references: [wallet_address])
+  Nft   nft_master?    @relation(fields: [mint_address], references: [mint_address])
+  Buyer wallet_master? @relation(name: "walletNftPurchases", fields: [buyer], references: [wallet_address])
   // Seller wallet_master? @relation(name: "walletNftSales", fields: [seller], references: [wallet_address])
 }
 
@@ -272,4 +272,6 @@ model wallet_holdings_txn {
   authority_address  String?   @db.VarChar(80)
   created_at         DateTime  @default(now()) @db.Timestamp(6)
   last_updated_at    DateTime  @default(now()) @db.Timestamp(6)
+
+  // wallet_master wallet_master? @relation(name: "walletTxn", fields: [wallet_address], references: [wallet_address])
 }
