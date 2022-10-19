@@ -3,6 +3,18 @@ import { Request } from "../types";
 import { ResponseHelper, verify_token } from "../helpers";
 import { prisma } from "../config";
 
+const fetchUser = async (user_id: number) =>
+  (await prisma.user_master.findUnique({
+    where: {
+      user_id: user_id,
+    },
+    include: {
+      wallet_master: {
+        where: { status: "active" },
+      },
+    },
+  })) || undefined;
+
 export const auth: Handler = async (
   req: Request,
   res: Response,
@@ -15,19 +27,7 @@ export const auth: Handler = async (
   ) {
     const decoded = verify_token(req.headers.authorization.split(" ")[1]);
     if (!decoded) return response.unauthorized("Invalid Token");
-
-    req.user =
-      (await prisma.user_master.findUnique({
-        where: {
-          user_id: decoded.user_id,
-        },
-        include: {
-          wallet_master: {
-            where: { status: "active" },
-          },
-        },
-      })) || undefined;
-
+    req.user = await fetchUser(decoded.user_id);
     next();
   } else {
     return response.unauthorized("Token not found");
@@ -47,14 +47,7 @@ export const bypass_auth: Handler = async (
   ) {
     const decoded = verify_token(req.headers.authorization.split(" ")[1]);
     if (!decoded) return response.unauthorized("Invalid Token");
-
-    req.user =
-      (await prisma.user_master.findUnique({
-        where: {
-          user_id: decoded.user_id,
-        },
-        include: { wallet_master: true },
-      })) || undefined;
+    req.user = await fetchUser(decoded.user_id);
   }
 
   next();

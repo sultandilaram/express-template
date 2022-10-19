@@ -260,12 +260,14 @@ const remove_wallet: Handler = async (req: Request, res: Response) => {
     const wallet = await prisma.wallet_master.findFirst({
       where: {
         wallet_address: walletStr,
+        status: "active",
       },
     });
 
     const nWalletsOwned = await prisma.wallet_master.count({
       where: {
         user_id: req.user.user_id,
+        status: "active",
       },
     });
 

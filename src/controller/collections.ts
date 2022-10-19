@@ -44,6 +44,7 @@ const fetch_collections: Handler = async (req: Request, res: Response) => {
                 },
                 Holder: {
                   user_id: req.user.user_id,
+                  status: "active",
                 },
               },
             },
@@ -155,6 +156,7 @@ const fetch_nfts: Handler = async (req: Request, res: Response) => {
           },
           Holder: {
             user_id: req.user.user_id,
+            status: "active",
           },
         },
       },
@@ -169,6 +171,7 @@ const fetch_nfts: Handler = async (req: Request, res: Response) => {
           },
           Holder: {
             user_id: req.user.user_id,
+            status: "active",
           },
         },
       },
@@ -176,6 +179,7 @@ const fetch_nfts: Handler = async (req: Request, res: Response) => {
         where: {
           Buyer: {
             user_id: req.user.user_id,
+            status: "active",
           },
         },
         orderBy: {
@@ -284,6 +288,7 @@ const update_user_price: Handler = async (req: Request, res: Response) => {
       nft_owners_txn_id,
       Buyer: {
         user_id: req.user.user_id,
+        status: "active",
       },
     },
   });
