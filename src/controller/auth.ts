@@ -297,6 +297,38 @@ const remove_wallet: Handler = async (req: Request, res: Response) => {
   return response.methodNotAllowed();
 };
 
+/**
+ * @description
+ * Update user data
+ */
+const update_user: Handler = async (req: Request, res: Response) => {
+  const response = new ResponseHelper(res);
+
+  if (!req.user) return response.unauthorized();
+
+  const user = req.body as User;
+  if (!user) return response.badRequest("User data is required");
+  if (!user.full_name || !user.json_str)
+    return response.badRequest("User data is required");
+
+  try {
+    const userUpdated = await prisma.user_master.update({
+      where: {
+        user_id: req.user.user_id,
+      },
+      data: {
+        full_name: user.full_name,
+        json_str: user.json_str,
+      },
+    });
+
+    return response.ok("User updated", userUpdated);
+  } catch (e: any) {
+    console.error("[API] update_user", e);
+    return response.error(undefined, e.message);
+  }
+};
+
 const router = Router();
 
 router.post("/request", auth_request);
@@ -304,5 +336,6 @@ router.post("/confirm", bypass_auth, auth_confirm);
 router.get("/refresh", auth, auth_refresh);
 router.post("/wallets", auth, fetch_wallets);
 router.post("/remove", auth, remove_wallet);
+router.post("/update", auth, update_user);
 
 export default router;
