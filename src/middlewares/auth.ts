@@ -21,7 +21,11 @@ export const auth: Handler = async (
         where: {
           user_id: decoded.user_id,
         },
-        include: { wallet_master: true },
+        include: {
+          wallet_master: {
+            where: { status: "active" },
+          },
+        },
       })) || undefined;
 
     next();
