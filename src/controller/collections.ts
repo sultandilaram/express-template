@@ -34,9 +34,9 @@ const fetch_collections: Handler = async (req: Request, res: Response) => {
             collection_id: {
               not: null,
             },
-            collection_name: {
-              not: null,
-            },
+            // collection_name: {
+            //   not: null,
+            // },
             holders: {
               some: {
                 balance: {
@@ -146,9 +146,9 @@ const fetch_nfts: Handler = async (req: Request, res: Response) => {
   const nfts = await prisma.nft_master.findMany({
     where: {
       collection_id,
-      collection_name: {
-        not: null,
-      },
+      // collection_name: {
+      //   not: null,
+      // },
       holders: {
         some: {
           balance: {
