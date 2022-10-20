@@ -8,6 +8,7 @@ import {
   MarketPlaceActionEnum,
   SortOrderEnum,
 } from "hyperspace-client-js/dist/sdk";
+import { MarketplaceActionEnums } from "hyperspace-client-js";
 
 interface FetchCollectionsParams {
   n?: string;
@@ -214,26 +215,27 @@ const fetch_activity: Handler = async (req: Request, res: Response) => {
   const { collection_id, n, p } = req.params as FetchActivityParams;
   const { traits } = req.body as FetchActivityBody;
   if (!collection_id) return response.badRequest("Collection Id not provided");
-  try {
+
+  const getActivity = async (actionTypes: MarketplaceActionEnums[]) => {
     const data = await hyperspace.getProjectHistory({
       condition: {
         projects: [{ project_id: collection_id, attributes: traits }],
-        actionTypes: [
-          MarketPlaceActionEnum.Transaction,
-          MarketPlaceActionEnum.Listing,
-          MarketPlaceActionEnum.Delisting,
-        ],
+        actionTypes,
       },
       paginationInfo: {
         page_number: n ? parseInt(n) : 1,
-        page_size: p ? parseInt(p) : 20,
+        page_size: p ? parseInt(p) : 10,
       },
     });
+    return data.getProjectHistory.market_place_snapshots;
+  };
 
-    const activity = data.getProjectHistory.market_place_snapshots;
-    // const paginationInfo = data.getProjectHistory.pagination_info
+  try {
+    const sale = (await getActivity([MarketPlaceActionEnum.Transaction])) || [];
+    const list = (await getActivity([MarketPlaceActionEnum.Listing])) || [];
+    const delist = (await getActivity([MarketPlaceActionEnum.Delisting])) || [];
 
-    return response.ok("Activity", activity);
+    return response.ok("Activity", [...sale, ...list, ...delist]);
   } catch (e) {
     console.error("[API] fetch_activity", e);
     return response.error("Something went wrong", e);
