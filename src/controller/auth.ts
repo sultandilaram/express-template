@@ -166,7 +166,8 @@ const auth_confirm: Handler = async (req: Request, res: Response) => {
             },
           });
 
-          if (wallet.wallet_address) subscribe_wallet(wallet.wallet_address);
+          if (!isWalletRegistered && wallet.wallet_address)
+            subscribe_wallet(wallet.wallet_address);
 
           user.wallet_master = await prisma.wallet_master.findMany({
             where: {
@@ -205,10 +206,6 @@ const auth_refresh: Handler = async (req: Request, res) => {
   const response = new ResponseHelper(res);
 
   if (!req.user) return response.unauthorized();
-
-  req.user.wallet_master?.map(
-    (wallet) => wallet.wallet_address && subscribe_wallet(wallet.wallet_address)
-  );
 
   return response.ok("Refreshed", {
     token: create_token({
