@@ -35,9 +35,6 @@ const fetch_collections: Handler = async (req: Request, res: Response) => {
             collection_id: {
               not: null,
             },
-            // collection_name: {
-            //   not: null,
-            // },
             holders: {
               some: {
                 balance: {
@@ -70,6 +67,21 @@ const fetch_collections: Handler = async (req: Request, res: Response) => {
     });
 
     return response.ok("Collections", serialize(collections));
+
+    const nft_counts = await prisma.nft_master.groupBy({
+      by: ["collection_id"],
+      where: {
+        collection_id: {
+          in: collections.map((x) => x.collection_id),
+        },
+      },
+      _count: true,
+    });
+
+    return response.ok("Collections", {
+      collections: serialize(collections),
+      counts: nft_counts,
+    });
   } else {
     const collections = await hyperspace.getProjects({
       orderBy: {
@@ -147,9 +159,6 @@ const fetch_nfts: Handler = async (req: Request, res: Response) => {
   const nfts = await prisma.nft_master.findMany({
     where: {
       collection_id,
-      // collection_name: {
-      //   not: null,
-      // },
       holders: {
         some: {
           balance: {
@@ -194,6 +203,32 @@ const fetch_nfts: Handler = async (req: Request, res: Response) => {
   });
 
   return response.ok("Holdings", serialize(nfts));
+
+  // const nft_count = await prisma.nft_master.count({
+  //   where: {
+  //     collection_id,
+  //     holders: {
+  //       some: {
+  //         balance: {
+  //           gt: 0,
+  //         },
+  //         Holder: {
+  //           user_id: req.user.user_id,
+  //           status: "active",
+  //         },
+  //       },
+  //     }
+  //   }
+  // })
+
+  // return response.ok("Holdings", {
+  //   nfts: serialize(nfts),
+  //   pagination: {
+  //     page_number,
+  //     page_size,
+  //     total_pages: Math.ceil(nft_count / page_size)
+  //   }
+  // });
 };
 
 interface FetchActivityParams {
@@ -258,12 +293,21 @@ const fetch_pnl: Handler = async (req: Request, res: Response) => {
   const sum_unrealized =
     await prisma.$queryRaw`SELECT SUM(difference) FROM daily_value_unrealized_view WHERE user_id = ${req.user.user_id}`;
 
+  const history_realized =
+    await prisma.$queryRaw`SELECT * FROM daily_value_realized_view`;
+  // const sum_realized =
+  //   await prisma.$queryRaw`SELECT SUM(difference) FROM daily_value_realized_view WHERE user_id = ${req.user.user_id}`;
+
   return response.ok(
     "Pnl",
     serialize({
       unrealized: {
         sum: (sum_unrealized as any)[0].sum,
         history: history_unrealized,
+      },
+      realized: {
+        // sum: (sum_realized as any)[0].sum,
+        history: history_realized,
       },
     })
   );

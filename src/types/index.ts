@@ -19,3 +19,8 @@ export interface User extends user_master {
 export interface Token {
   user_id: number;
 }
+
+export interface LocalCollection {
+  magiceden_id: string;
+  hyperspace_id: string;
+}

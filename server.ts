@@ -44,7 +44,7 @@ app.use("/", routes);
 
 // SCHEDULE CRON JOBS
 // crons();
-// resolveCollectionIds();
+resolveCollectionIds();
 
 // STATING SERVER
 app.listen(port, () => {
