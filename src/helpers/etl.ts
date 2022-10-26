@@ -271,24 +271,196 @@ const resolveNFTMasterCollectionIds = async () => {
   console.log("[ETL] resolved nfts", resolved_nfts.length);
 };
 
-const resolveRanksAndTraits = async () => {
+const resolveIdAndRanksAndTraits = async () => {
   const cached_collections = await getCollections();
 
   const howrareis_ids = cached_collections
     .filter((x) => !!x.howrareis_id)
     .map((x) => x.howrareis_id);
 
+  console.log("[ETL] Total cached collections:", cached_collections.length);
+  console.log("[ETL] Howrare.is collections:", howrareis_ids.length);
+
+  const db_nfts = await prisma.nft_master.findMany({
+    select: {
+      mint_address: true,
+      collection_id: true,
+      name: true,
+      howrare_rank: true,
+      image: true,
+      nft_trait_master: true,
+    },
+  });
+
+  console.log("[ETL] Total NFTS", db_nfts.length);
+
   for (let howrareis_id of howrareis_ids) {
     const response = await axios
       .get(`https://api.howrare.is/v0.1/collections/${howrareis_id}`)
       .then((x) => x.data.result.data);
-    const items = response.items.map((x: any) => ({
-      mint_address: x.mint,
-      rank: x.rank,
-      traits: x.attributes,
-    }));
-    break;
+
+    const howrare_mints: string[] = response.items.map((x: any) => x.mint);
+
+    const collection_nfts = db_nfts.filter(
+      (x) =>
+        x.mint_address &&
+        !!howrare_mints.includes(x.mint_address) &&
+        (!x.name ||
+          !x.howrare_rank ||
+          !x.image ||
+          !x.collection_id ||
+          !x.nft_trait_master.length)
+    );
+
+    console.log(
+      "[ETL] Found",
+      collection_nfts.length,
+      "NFTs for",
+      howrareis_id
+    );
+    for (let nft of collection_nfts) {
+      const howrare_nft = response.items.find(
+        (x: any) => x.mint === nft.mint_address
+      );
+
+      if (!nft.mint_address || !howrare_nft) continue;
+
+      // nfts.push({
+      //   collection_id:
+      //     nft.collection_id ||
+      //     cached_collections.find((x) => x.howrareis_id == howrareis_id)
+      //       ?.hyperspace_id ||
+      //     null,
+      //   mint_address: howrare_nft.mint,
+      //   rank: howrare_nft.rank,
+      // });
+
+      if (!nft.name || !nft.howrare_rank || !nft.image || !nft.collection_id) {
+        const x = {
+          mint_address: nft.mint_address,
+          name: nft.name || howrare_nft.name,
+          rank: nft.howrare_rank || howrare_nft.rank,
+          image: nft.image || howrare_nft.image,
+          collection_id:
+            nft.collection_id ||
+            cached_collections.find((x) => x.howrareis_id == howrareis_id)
+              ?.hyperspace_id ||
+            null,
+        };
+
+        console.log(
+          "[ETL] Found NFT:",
+          nft.mint_address,
+          nft.name,
+          nft.howrare_rank,
+          nft.nft_trait_master.length,
+          nft.image
+        );
+
+        await prisma.nft_master.update({
+          where: {
+            mint_address: x.mint_address,
+          },
+          data: {
+            collection_id: x.collection_id,
+            howrare_rank: x.rank,
+            name: x.name,
+            image: x.image,
+          },
+        });
+        console.log(
+          "[ETL] Updated NFT:",
+          x.mint_address,
+          x.name,
+          x.rank,
+          nft.nft_trait_master.length,
+          x.image
+        );
+      }
+
+      // traits = traits.concat(
+      //   howrare_nft.attributes.map((x: any) => ({
+      //     mint_address: howrare_nft.mint,
+      //     trait_type: x.name,
+      //     value: typeof x.value === "string" ? x.value : x.value.toString(),
+      //   }))
+      // );
+
+      if (!nft.nft_trait_master.length) {
+        const traits = howrare_nft.attributes.map((x: any) => ({
+          mint_address: howrare_nft.mint,
+          trait_type: x.name,
+          value: typeof x.value === "string" ? x.value : x.value.toString(),
+        }));
+
+        console.log("[ETL] Found Traits:", traits.length);
+
+        await prisma.$transaction([
+          ...traits.map((x: any) =>
+            prisma.nft_trait_master.upsert({
+              where: {
+                mint_address_trait_type_value: {
+                  mint_address: x.mint_address,
+                  trait_type: x.trait_type,
+                  value: x.value,
+                },
+              },
+              create: {
+                mint_address: x.mint_address,
+                trait_type: x.trait_type,
+                value: x.value,
+              },
+              update: {
+                mint_address: x.mint_address,
+                trait_type: x.trait_type,
+                value: x.value,
+              },
+            })
+          ),
+        ]);
+
+        console.log("[ETL] Updated Traits:", traits.length);
+      }
+    }
   }
+
+  // await prisma.$transaction([
+  //   ...traits.map((x) =>
+  //     prisma.nft_trait_master.upsert({
+  //       where: {
+  //         mint_address_trait_type_value: {
+  //           mint_address: x.mint_address,
+  //           trait_type: x.trait_type,
+  //           value: x.value,
+  //         },
+  //       },
+  //       create: {
+  //         mint_address: x.mint_address,
+  //         trait_type: x.trait_type,
+  //         value: x.value,
+  //       },
+  //       update: {
+  //         mint_address: x.mint_address,
+  //         trait_type: x.trait_type,
+  //         value: x.value,
+  //       },
+  //     })
+  //   ),
+  //   ...nfts.map((x) =>
+  //     prisma.nft_master.update({
+  //       where: {
+  //         mint_address: x.mint_address,
+  //       },
+  //       data: {
+  //         collection_id: x.collection_id,
+  //         howrare_rank: x.rank,
+  //       },
+  //     })
+  //   ),
+  // ]);
+
+  // console.log("[ETL] Updated NFTs:", nfts.length);
+  // console.log("[ETL] Updated Traits:", traits.length);
 };
 
 const resolveTokenAccountBalances = async () => {
@@ -335,5 +507,5 @@ export default async function () {
   // resolveTokenAccountBalances();
   await resolveCachedCollectionIds();
   // await resolveNFTMasterCollectionIds();
-  resolveRanksAndTraits();
+  resolveIdAndRanksAndTraits();
 }

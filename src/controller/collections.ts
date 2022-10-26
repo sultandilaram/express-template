@@ -9,6 +9,7 @@ import {
   SortOrderEnum,
 } from "hyperspace-client-js/dist/sdk";
 import { MarketplaceActionEnums } from "hyperspace-client-js";
+import { nft_owners_txn } from "@prisma/client";
 
 interface FetchCollectionsParams {
   n?: string;
@@ -326,8 +327,22 @@ const fetch_pnl: Handler = async (req: Request, res: Response) => {
 };
 
 interface UpdateUserPriceBody {
-  nft_owners_txn_id: number;
-  user_edited_price: number;
+  create?: {
+    mint_address: string;
+    token_address: string;
+    mint_authority: string;
+    txn_time: number;
+    txn_type: string;
+    buyer: string;
+    seller: string;
+    wallet: string;
+    user_edited_price: number;
+    market_place: string;
+  };
+  update?: {
+    nft_owners_txn_id: number;
+    user_edited_price: number;
+  };
 }
 
 /**
@@ -336,34 +351,46 @@ interface UpdateUserPriceBody {
  */
 const update_user_price: Handler = async (req: Request, res: Response) => {
   const response = new ResponseHelper(res);
-  const { nft_owners_txn_id, user_edited_price } =
-    req.body as UpdateUserPriceBody;
+  const { create, update } = req.body as UpdateUserPriceBody;
 
   if (!req.user) return response.unauthorized();
 
-  const nft_owners_txn = await prisma.nft_owners_txn.findFirst({
-    where: {
-      nft_owners_txn_id,
-      Buyer: {
-        user_id: req.user.user_id,
-        status: "active",
+  let tx: nft_owners_txn;
+
+  if (create) {
+    if (
+      !req.user.wallet_master?.find((x) => x.wallet_address === create.wallet)
+    )
+      return response.unauthorized("Unknown Wallet");
+
+    tx = await prisma.nft_owners_txn.create({
+      data: {
+        mint_address: create.mint_address,
+        token_address: create.token_address,
+        mint_authority: create.mint_authority,
+        txn_time: new Date(create.txn_time),
+        txn_type: create.txn_type,
+        buyer: create.buyer,
+        seller: create.seller,
+        wallet: create.wallet,
+        user_edited_price: create.user_edited_price,
+        market_place: create.market_place,
       },
-    },
-  });
+    });
+  } else if (update) {
+    tx = await prisma.nft_owners_txn.update({
+      where: {
+        nft_owners_txn_id: update.nft_owners_txn_id,
+      },
+      data: {
+        user_edited_price: update.nft_owners_txn_id,
+      },
+    });
+  } else {
+    return response.badRequest("Provide fields for either update or create");
+  }
 
-  if (!nft_owners_txn)
-    return response.notFound("NFT sale transaction not found!");
-
-  const updated = await prisma.nft_owners_txn.update({
-    where: {
-      nft_owners_txn_id,
-    },
-    data: {
-      user_edited_price,
-    },
-  });
-
-  return response.ok("Updated", serialize(updated));
+  return response.ok("Transaction", serialize(tx));
 };
 
 const router = Router();
