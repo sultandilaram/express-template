@@ -1,518 +1,818 @@
 [
   {
+    "name": "",
     "magiceden_id": "blockchainapifounders",
-    "hyperspace_id": "AuGzGR3vZW4P86vSxzjZfCbdkb8Nr1Yz3RHVRt4UFMiG"
+    "hyperspace_id": "AuGzGR3vZW4P86vSxzjZfCbdkb8Nr1Yz3RHVRt4UFMiG",
+    "howrareis_id": ""
   },
   {
+    "name": "The Jungle",
     "magiceden_id": "the_jungle",
-    "hyperspace_id": "E6hWzffEzKdoF2Dpanhhh88dMgNGG3ttH3wMEh1wPfeV"
+    "hyperspace_id": "E6hWzffEzKdoF2Dpanhhh88dMgNGG3ttH3wMEh1wPfeV",
+    "howrareis_id": "thejungle"
   },
   {
+    "name": "Malibu Dolphin Mixer",
     "magiceden_id": "malibu_dolphin_mixer",
-    "hyperspace_id": "malibudolphinmixer"
+    "hyperspace_id": "malibudolphinmixer",
+    "howrareis_id": "malibudolphinmixer"
   },
   {
+    "name": "Founders Coins",
     "magiceden_id": "okbfc",
-    "hyperspace_id": "2EXfCwmFHRWtV6NEvVwGAz8ZjzKADfSZqtaq18iC61Yo"
+    "hyperspace_id": "2EXfCwmFHRWtV6NEvVwGAz8ZjzKADfSZqtaq18iC61Yo",
+    "howrareis_id": "founders_coins"
   },
   {
+    "name": "Malibu Dolphin Mixer",
     "magiceden_id": "malibu_dolphin_mixer",
-    "hyperspace_id": "malibudolphinmixer"
+    "hyperspace_id": "malibudolphinmixer",
+    "howrareis_id": "malibudolphinmixer"
   },
   {
+    "name": "",
     "magiceden_id": "dwa",
-    "hyperspace_id": "kingdomofdwarves"
+    "hyperspace_id": "kingdomofdwarves",
+    "howrareis_id": ""
   },
   {
+    "name": "",
     "magiceden_id": "dwa",
-    "hyperspace_id": "kingdomofdwarves"
+    "hyperspace_id": "kingdomofdwarves",
+    "howrareis_id": ""
   },
   {
+    "name": "",
     "magiceden_id": "ggsg_concordians",
-    "hyperspace_id": "ggsgconcordians"
+    "hyperspace_id": "ggsgconcordians",
+    "howrareis_id": ""
   },
   {
+    "name": "",
     "magiceden_id": "angoverse",
-    "hyperspace_id": "2hiC9JdgS7i7BxFtGnrbFQpnHUq2xqoUgPhc1b7PNdoB"
+    "hyperspace_id": "2hiC9JdgS7i7BxFtGnrbFQpnHUq2xqoUgPhc1b7PNdoB",
+    "howrareis_id": ""
   },
   {
+    "name": "",
     "magiceden_id": "angoverse",
-    "hyperspace_id": "2hiC9JdgS7i7BxFtGnrbFQpnHUq2xqoUgPhc1b7PNdoB"
+    "hyperspace_id": "2hiC9JdgS7i7BxFtGnrbFQpnHUq2xqoUgPhc1b7PNdoB",
+    "howrareis_id": ""
   },
   {
+    "name": "",
     "magiceden_id": "matrica_labs_pixels",
-    "hyperspace_id": "matricapixels"
+    "hyperspace_id": "matricapixels",
+    "howrareis_id": ""
   },
   {
+    "name": "The Remnants",
     "magiceden_id": "the_remnants_",
-    "hyperspace_id": "theremnants"
+    "hyperspace_id": "theremnants",
+    "howrareis_id": "the_remnants_"
   },
   {
+    "name": "Doge Capital",
     "magiceden_id": "doge_capital",
-    "hyperspace_id": "dogecapital"
+    "hyperspace_id": "dogecapital",
+    "howrareis_id": "dogecapital"
   },
   {
+    "name": "",
     "magiceden_id": "ggsg_enigma_crystals",
-    "hyperspace_id": "enigmacrystals"
+    "hyperspace_id": "enigmacrystals",
+    "howrareis_id": ""
   },
   {
+    "name": "GGSG: Galactic Geckos",
     "magiceden_id": "galactic_geckos",
-    "hyperspace_id": "galacticgeckospacegarage"
+    "hyperspace_id": "galacticgeckospacegarage",
+    "howrareis_id": "galacticgeckos"
   },
   {
+    "name": "The Geisha Clan",
     "magiceden_id": "the_geisha_clan",
-    "hyperspace_id": "thegeishaclan"
+    "hyperspace_id": "thegeishaclan",
+    "howrareis_id": "thegeishaclan"
   },
   {
+    "name": "Botborgs",
     "magiceden_id": "botborgs",
-    "hyperspace_id": "botborgs"
+    "hyperspace_id": "botborgs",
+    "howrareis_id": "botborgs"
   },
   {
+    "name": "",
     "magiceden_id": "sexy_kiwi_birdz",
-    "hyperspace_id": "sexykiwibirdz"
+    "hyperspace_id": "sexykiwibirdz",
+    "howrareis_id": ""
   },
   {
+    "name": "Aurory",
     "magiceden_id": "aurory",
-    "hyperspace_id": "aurory"
+    "hyperspace_id": "aurory",
+    "howrareis_id": "aurory"
   },
   {
+    "name": "",
     "magiceden_id": "swamp_syndicate",
-    "hyperspace_id": "swamp_syndicate"
+    "hyperspace_id": "swamp_syndicate",
+    "howrareis_id": ""
   },
   {
+    "name": "",
     "magiceden_id": "portals_standard_citizen_cards",
-    "hyperspace_id": "C7hkcZSCA67ytsNjvhn5LN1MH6oib83J8FJ5Hnoz3pFC"
+    "hyperspace_id": "C7hkcZSCA67ytsNjvhn5LN1MH6oib83J8FJ5Hnoz3pFC",
+    "howrareis_id": ""
   },
   {
+    "name": "",
     "magiceden_id": "cam1l30n",
-    "hyperspace_id": "cam1l30n"
+    "hyperspace_id": "cam1l30n",
+    "howrareis_id": ""
   },
   {
+    "name": "Just Ape.",
     "magiceden_id": "justape",
-    "hyperspace_id": "6bw9LDzR5K4pkaiFT7iVQzyUAeuN2Mx22YLQ3YaWRYvt"
+    "hyperspace_id": "6bw9LDzR5K4pkaiFT7iVQzyUAeuN2Mx22YLQ3YaWRYvt",
+    "howrareis_id": "justape"
   },
   {
+    "name": "",
     "magiceden_id": "bonfida",
-    "hyperspace_id": "solananameservice"
+    "hyperspace_id": "solananameservice",
+    "howrareis_id": ""
   },
   {
+    "name": "",
     "magiceden_id": "dumpsters",
-    "hyperspace_id": "7odDDYeTtnzRtSuGsCUmZhxzFYpboUMWCPFzLuWN3pLM"
+    "hyperspace_id": "7odDDYeTtnzRtSuGsCUmZhxzFYpboUMWCPFzLuWN3pLM",
+    "howrareis_id": ""
   },
   {
+    "name": "Skull Division - Project Sku11",
     "magiceden_id": "project_sku11",
-    "hyperspace_id": "skulldivision-projectsku11"
+    "hyperspace_id": "skulldivision-projectsku11",
+    "howrareis_id": "skulldivision_projectsku11"
   },
   {
+    "name": "Solana Surfers",
     "magiceden_id": "solana_surfers",
-    "hyperspace_id": "solanasurfers"
+    "hyperspace_id": "solanasurfers",
+    "howrareis_id": "solanasurfers"
   },
   {
+    "name": "",
     "magiceden_id": "thefirstedition",
-    "hyperspace_id": "6NhGrqnT1KQm8SBwRmjf4YZ1KZ511gCA3YPuaY2yqLPZ"
+    "hyperspace_id": "6NhGrqnT1KQm8SBwRmjf4YZ1KZ511gCA3YPuaY2yqLPZ",
+    "howrareis_id": ""
   },
   {
+    "name": "",
     "magiceden_id": "a_basic_ape",
-    "hyperspace_id": "A Basic Ape"
+    "hyperspace_id": "A Basic Ape",
+    "howrareis_id": ""
   },
   {
+    "name": "",
     "magiceden_id": "genesis_bunnies",
-    "hyperspace_id": "genesis_bunnies"
+    "hyperspace_id": "genesis_bunnies",
+    "howrareis_id": ""
   },
   {
+    "name": "",
     "magiceden_id": "secret_tiger_association",
-    "hyperspace_id": "Hxo1y5E946BQBm3JucxpEYkdoMNTdCBYYEjQV8UQFByu"
+    "hyperspace_id": "Hxo1y5E946BQBm3JucxpEYkdoMNTdCBYYEjQV8UQFByu",
+    "howrareis_id": ""
   },
   {
+    "name": "Solsteads",
     "magiceden_id": "solsteads_surreal_estate",
-    "hyperspace_id": "solsteads"
+    "hyperspace_id": "solsteads",
+    "howrareis_id": "solsteads"
   },
   {
+    "name": "Rakkudos",
     "magiceden_id": "rakkudos",
-    "hyperspace_id": "HAvvubBRmiKECTCBBtYzhUx53SyZn3GZ2fcvw79MQqtY"
+    "hyperspace_id": "HAvvubBRmiKECTCBBtYzhUx53SyZn3GZ2fcvw79MQqtY",
+    "howrareis_id": "rakkudos"
   },
   {
+    "name": "Poverty Boys",
     "magiceden_id": "poverty_boys",
-    "hyperspace_id": "9Qhs4PjNdjtWXEBeub5U9c3H9t6HuKKA61a1E4rwhj7H"
+    "hyperspace_id": "9Qhs4PjNdjtWXEBeub5U9c3H9t6HuKKA61a1E4rwhj7H",
+    "howrareis_id": "povertyboys"
   },
   {
+    "name": "",
     "magiceden_id": "gorecats",
-    "hyperspace_id": "gorecats"
+    "hyperspace_id": "gorecats",
+    "howrareis_id": ""
   },
   {
+    "name": "Owly",
     "magiceden_id": "owly",
-    "hyperspace_id": "H1qFY6arpR3LURAxw1bL7pA5y3fL3KmPUDM5w3PNAu6E"
+    "hyperspace_id": "H1qFY6arpR3LURAxw1bL7pA5y3fL3KmPUDM5w3PNAu6E",
+    "howrareis_id": "owly"
   },
   {
+    "name": "",
     "magiceden_id": "dumbass_donkeys",
-    "hyperspace_id": "DGXmWcuRm8ZSxWobYxqLJtFaGgt24ZzbxwMdV6Nffk4Y"
+    "hyperspace_id": "DGXmWcuRm8ZSxWobYxqLJtFaGgt24ZzbxwMdV6Nffk4Y",
+    "howrareis_id": ""
   },
   {
+    "name": "",
     "magiceden_id": "okg",
-    "hyperspace_id": "FR4HXFsM2FRhT7mV7RBmLLMkLxKiCkwY2bCDpgZmjqNt"
+    "hyperspace_id": "FR4HXFsM2FRhT7mV7RBmLLMkLxKiCkwY2bCDpgZmjqNt",
+    "howrareis_id": ""
   },
   {
+    "name": "",
     "magiceden_id": "skellydao",
-    "hyperspace_id": "ESX6F4yXTmLasKdTPBuER5jpqrQRbA6APEsz5CBABEV6"
+    "hyperspace_id": "ESX6F4yXTmLasKdTPBuER5jpqrQRbA6APEsz5CBABEV6",
+    "howrareis_id": ""
   },
   {
+    "name": "",
     "magiceden_id": "soul_of_hidama",
-    "hyperspace_id": "soul_of_hidama"
+    "hyperspace_id": "soul_of_hidama",
+    "howrareis_id": ""
   },
   {
+    "name": "The ACES NFT",
     "magiceden_id": "the_aces_nft",
-    "hyperspace_id": "theacesnft"
+    "hyperspace_id": "theacesnft",
+    "howrareis_id": "theacesnft"
   },
   {
+    "name": "",
     "magiceden_id": "soul_of_hidama",
-    "hyperspace_id": "soul_of_hidama"
+    "hyperspace_id": "soul_of_hidama",
+    "howrareis_id": ""
   },
   {
+    "name": "Sol Patrol",
     "magiceden_id": "sol_patrol",
-    "hyperspace_id": "solpatrol"
+    "hyperspace_id": "solpatrol",
+    "howrareis_id": "solpatrol"
   },
   {
+    "name": "",
     "magiceden_id": "the_fracture",
-    "hyperspace_id": "thefracture"
+    "hyperspace_id": "thefracture",
+    "howrareis_id": ""
   },
   {
+    "name": "Hokkaido Frogz",
     "magiceden_id": "hokkaido_frogz",
-    "hyperspace_id": "hokkaidofrogz"
+    "hyperspace_id": "hokkaidofrogz",
+    "howrareis_id": "hokkaidofrogz"
   },
   {
+    "name": "Dinodawg Kingdom",
     "magiceden_id": "dinodawg_kingdom",
-    "hyperspace_id": "dinodawgkingdom"
+    "hyperspace_id": "dinodawgkingdom",
+    "howrareis_id": "dinodawgkingdom"
   },
   {
+    "name": "Solana Monkey University",
     "magiceden_id": "solana_monkey_university",
-    "hyperspace_id": "solmonkeyuniversity"
+    "hyperspace_id": "solmonkeyuniversity",
+    "howrareis_id": "solanamonkeyuniversity"
   },
   {
+    "name": "Angomon",
     "magiceden_id": "angomon",
-    "hyperspace_id": "angomon"
+    "hyperspace_id": "angomon",
+    "howrareis_id": "angomon"
   },
   {
+    "name": "",
     "magiceden_id": "shi_guardians_by_solanafloor",
-    "hyperspace_id": "shiguardians"
+    "hyperspace_id": "shiguardians",
+    "howrareis_id": ""
   },
   {
+    "name": "Solana Monke Rejects",
     "magiceden_id": "solana_monke_rejects",
-    "hyperspace_id": "solanamonkerejects"
+    "hyperspace_id": "solanamonkerejects",
+    "howrareis_id": "solanamonkerejects"
   },
   {
+    "name": "Cops Game",
     "magiceden_id": "cops_game",
-    "hyperspace_id": "7s9HDid18E2jQ3tiuVZYa3KN9KyLgFBi7XJ3ZJJLsQr7"
+    "hyperspace_id": "7s9HDid18E2jQ3tiuVZYa3KN9KyLgFBi7XJ3ZJJLsQr7",
+    "howrareis_id": "copsgame"
   },
   {
+    "name": "",
     "magiceden_id": "deciphered_letters",
-    "hyperspace_id": "decipheredletters"
+    "hyperspace_id": "decipheredletters",
+    "howrareis_id": ""
   },
   {
+    "name": "",
     "magiceden_id": "solparasites",
-    "hyperspace_id": "solparasites"
+    "hyperspace_id": "solparasites",
+    "howrareis_id": ""
   },
   {
+    "name": "Great Goats",
     "magiceden_id": "great__goats",
-    "hyperspace_id": "5PUq4VZSbm5ZwrQMh2bHNLM8ca6UieguKiaLRJqp3d75"
+    "hyperspace_id": "5PUq4VZSbm5ZwrQMh2bHNLM8ca6UieguKiaLRJqp3d75",
+    "howrareis_id": "greatgoats"
   },
   {
+    "name": "",
     "magiceden_id": "angry_armadillos",
-    "hyperspace_id": "angryarmadillos"
+    "hyperspace_id": "angryarmadillos",
+    "howrareis_id": ""
   },
   {
+    "name": "Wise Cats",
     "magiceden_id": "wisecats",
-    "hyperspace_id": "wisecats"
+    "hyperspace_id": "wisecats",
+    "howrareis_id": "wisecats"
   },
   {
+    "name": "",
     "magiceden_id": "thedragons",
-    "hyperspace_id": "GF4kufSQ1TgVZGJog5zY7t5fCspxkT8dxs5Bir1PNmA8"
+    "hyperspace_id": "GF4kufSQ1TgVZGJog5zY7t5fCspxkT8dxs5Bir1PNmA8",
+    "howrareis_id": ""
   },
   {
+    "name": "",
     "magiceden_id": "corporats_lab",
-    "hyperspace_id": "corporatslab"
+    "hyperspace_id": "corporatslab",
+    "howrareis_id": ""
   },
   {
+    "name": "Baby Ape Tiger Club",
     "magiceden_id": "baby_ape_tiger_club",
-    "hyperspace_id": "babyapetigerclub"
+    "hyperspace_id": "babyapetigerclub",
+    "howrareis_id": "babyapetigerclub"
   },
   {
+    "name": "Kronikz Kweenz",
     "magiceden_id": "kronikz_kweenz",
-    "hyperspace_id": "kronikz_kweenz"
+    "hyperspace_id": "kronikz_kweenz",
+    "howrareis_id": "kronikzkweenz"
   },
   {
+    "name": "Solana Droid Business",
     "magiceden_id": "solana_droid_business",
-    "hyperspace_id": "solanadroidbusiness"
+    "hyperspace_id": "solanadroidbusiness",
+    "howrareis_id": "solanadroidbusiness"
   },
   {
+    "name": "",
     "magiceden_id": "turnt_up_tikis",
-    "hyperspace_id": "turntuptikis"
+    "hyperspace_id": "turntuptikis",
+    "howrareis_id": ""
   },
   {
+    "name": "Such Shibas",
     "magiceden_id": "such_shibas",
-    "hyperspace_id": "7rK2nh1hfALTjQcauAUXR2eg74UcgTpQzPZG79XTS9au"
+    "hyperspace_id": "7rK2nh1hfALTjQcauAUXR2eg74UcgTpQzPZG79XTS9au",
+    "howrareis_id": "suchshibas"
   },
   {
+    "name": "Solsunsets",
     "magiceden_id": "solsunsets",
-    "hyperspace_id": "solsunsets"
+    "hyperspace_id": "solsunsets",
+    "howrareis_id": "solsunsets"
   },
   {
+    "name": "Panthers In The Metaverse",
     "magiceden_id": "panthers_in_the_metaverse",
-    "hyperspace_id": "panthersinthemetaverse"
+    "hyperspace_id": "panthersinthemetaverse",
+    "howrareis_id": "panthersinthemetaverse"
   },
   {
+    "name": "Otaku Origins",
     "magiceden_id": "otaku",
-    "hyperspace_id": "otaku"
+    "hyperspace_id": "otaku",
+    "howrareis_id": "otakuorigins"
   },
   {
+    "name": "Bobos Of War",
     "magiceden_id": "bobos_of_war",
-    "hyperspace_id": "bobosofwar"
+    "hyperspace_id": "bobosofwar",
+    "howrareis_id": "bobosofwar"
   },
   {
+    "name": "",
     "magiceden_id": "pixel_guild_golden_key",
-    "hyperspace_id": "sFgDh7LbMUkjnXDy1ViYyTmizFKw9P4bPRHx2UaUt4F"
+    "hyperspace_id": "sFgDh7LbMUkjnXDy1ViYyTmizFKw9P4bPRHx2UaUt4F",
+    "howrareis_id": ""
   },
   {
+    "name": "",
     "magiceden_id": "monkai",
-    "hyperspace_id": "4pw61wYK4S5HvWfWY9Z68Z16rkMjmnkstFH1nBjSMfRL"
+    "hyperspace_id": "4pw61wYK4S5HvWfWY9Z68Z16rkMjmnkstFH1nBjSMfRL",
+    "howrareis_id": ""
   },
   {
+    "name": "Pixel Guild - Loot Legends",
     "magiceden_id": "pixel_guild_loot_legends",
-    "hyperspace_id": "FwSbBiWbXBgVvRvZ4FqXQ6qAxmTZaWRNabuH9j6n1Jie"
+    "hyperspace_id": "FwSbBiWbXBgVvRvZ4FqXQ6qAxmTZaWRNabuH9j6n1Jie",
+    "howrareis_id": "pixel_guild_loot_legends"
   },
   {
+    "name": "Dazed Ducks",
     "magiceden_id": "dazedducks_metagalactic_club",
-    "hyperspace_id": "dazedducks"
+    "hyperspace_id": "dazedducks",
+    "howrareis_id": "dazedducks"
   },
   {
+    "name": "The Geisha Clan : Creatures",
     "magiceden_id": "creatures",
-    "hyperspace_id": "creatures"
+    "hyperspace_id": "creatures",
+    "howrareis_id": "thegeishaclancreatures"
   },
   {
+    "name": "Solana HODL Whales",
     "magiceden_id": "solana_hodl_whales",
-    "hyperspace_id": "solanahodlwhales"
+    "hyperspace_id": "solanahodlwhales",
+    "howrareis_id": "solanahodlwhales"
   },
   {
+    "name": "",
     "magiceden_id": "tiny_colony",
-    "hyperspace_id": "tinycolonies"
+    "hyperspace_id": "tinycolonies",
+    "howrareis_id": ""
   },
   {
+    "name": "",
     "magiceden_id": "frakt",
-    "hyperspace_id": "frakt"
+    "hyperspace_id": "frakt",
+    "howrareis_id": ""
   },
   {
+    "name": "",
     "magiceden_id": "ghostguys_metaforge",
-    "hyperspace_id": "ghostguysmetaforge"
+    "hyperspace_id": "ghostguysmetaforge",
+    "howrareis_id": ""
   },
   {
+    "name": "GoldenEggs DAO",
     "magiceden_id": "goldeneggsnft",
-    "hyperspace_id": "Efj3PTzxHHSyJVaBhL2ji8P3qZWzKoiHFgDTX6ry8rTL"
+    "hyperspace_id": "Efj3PTzxHHSyJVaBhL2ji8P3qZWzKoiHFgDTX6ry8rTL",
+    "howrareis_id": "goldeneggs"
   },
   {
+    "name": "",
     "magiceden_id": "tiny_pets_gen1",
-    "hyperspace_id": "tinypetsgen1"
+    "hyperspace_id": "tinypetsgen1",
+    "howrareis_id": ""
   },
   {
+    "name": "",
     "magiceden_id": "fracture_comic_book_1",
-    "hyperspace_id": "CVyKSdPqFooZmyntnEkS5Z4Jze3fa5MvcVPhwbqC67VT"
+    "hyperspace_id": "CVyKSdPqFooZmyntnEkS5Z4Jze3fa5MvcVPhwbqC67VT",
+    "howrareis_id": ""
   },
   {
+    "name": "",
     "magiceden_id": "richarab",
-    "hyperspace_id": "H5rvaPfWgnUkaEwS3W9hVGrMCbn8DzTPxJRNoRH8vTZK"
+    "hyperspace_id": "H5rvaPfWgnUkaEwS3W9hVGrMCbn8DzTPxJRNoRH8vTZK",
+    "howrareis_id": ""
   },
   {
+    "name": "Dinodawgs™️ 3D",
     "magiceden_id": "dinodawgs_3d",
-    "hyperspace_id": "cwvxF5Ew6Rky8Pio5JNKm4wtxB9ukVTBLLWh26vdSEo"
+    "hyperspace_id": "cwvxF5Ew6Rky8Pio5JNKm4wtxB9ukVTBLLWh26vdSEo",
+    "howrareis_id": "dinodawgs3d"
   },
   {
+    "name": "Sphynx Underground Society",
     "magiceden_id": "sphynx_underground_society",
-    "hyperspace_id": "B5aoZxk2qvjiGzdTU2hLxLHegYB1HEbMyG8Av1izqok9"
+    "hyperspace_id": "B5aoZxk2qvjiGzdTU2hLxLHegYB1HEbMyG8Av1izqok9",
+    "howrareis_id": "sphynx_underground_society"
   },
   {
+    "name": "Drippies",
     "magiceden_id": "drippies",
-    "hyperspace_id": "drippies"
+    "hyperspace_id": "drippies",
+    "howrareis_id": "drippies"
   },
   {
+    "name": "",
     "magiceden_id": "thenumbercoin",
-    "hyperspace_id": "27hkeAdw4a6SdAUmnYW7NRwX3nstjev2NgDW5PXL1155"
+    "hyperspace_id": "27hkeAdw4a6SdAUmnYW7NRwX3nstjev2NgDW5PXL1155",
+    "howrareis_id": ""
   },
   {
+    "name": "",
     "magiceden_id": "mutant_voxel_vulture",
-    "hyperspace_id": "mutant_voxel_vulture"
+    "hyperspace_id": "mutant_voxel_vulture",
+    "howrareis_id": ""
   },
   {
+    "name": "",
     "magiceden_id": "bucketheadz",
-    "hyperspace_id": "bucketheadz"
+    "hyperspace_id": "bucketheadz",
+    "howrareis_id": ""
   },
   {
+    "name": "Magic Mushies",
     "magiceden_id": "magic_mushies",
-    "hyperspace_id": "magicmushies"
+    "hyperspace_id": "magicmushies",
+    "howrareis_id": "magicmushies"
   },
   {
+    "name": "Magic Mushies",
     "magiceden_id": "magic_mushies",
-    "hyperspace_id": "magicmushies"
+    "hyperspace_id": "magicmushies",
+    "howrareis_id": "magicmushies"
   },
   {
+    "name": "Pesky Penguin Club",
     "magiceden_id": "pesky_penguins",
-    "hyperspace_id": "peskypenguins"
+    "hyperspace_id": "peskypenguins",
+    "howrareis_id": "peskypenguinclub"
   },
   {
+    "name": "",
     "magiceden_id": "rowdy_rams",
-    "hyperspace_id": "rowdyrams"
+    "hyperspace_id": "rowdyrams",
+    "howrareis_id": ""
   },
   {
+    "name": "",
     "magiceden_id": "solsquatch",
-    "hyperspace_id": "solsquatch"
+    "hyperspace_id": "solsquatch",
+    "howrareis_id": ""
   },
   {
+    "name": "",
     "magiceden_id": "sol_kitties",
-    "hyperspace_id": "solkitties"
+    "hyperspace_id": "solkitties",
+    "howrareis_id": ""
   },
   {
+    "name": "Catalina Whale Mixer",
     "magiceden_id": "the_catalina_whale_mixer",
-    "hyperspace_id": "catalinawhalemixer"
+    "hyperspace_id": "catalinawhalemixer",
+    "howrareis_id": "catalinawhalemixer"
   },
   {
+    "name": "Danger Valley Ducks",
     "magiceden_id": "danger_valley_ducks",
-    "hyperspace_id": "dangervalley"
+    "hyperspace_id": "dangervalley",
+    "howrareis_id": "dangervalleyducks"
   },
   {
+    "name": "Shkary Sharks",
     "magiceden_id": "shkary_sharks",
-    "hyperspace_id": "shkarysharks"
+    "hyperspace_id": "shkarysharks",
+    "howrareis_id": "shkarysharks"
   },
   {
+    "name": "Shkary Sharks",
     "magiceden_id": "shkary_sharks",
-    "hyperspace_id": "shkarysharks"
+    "hyperspace_id": "shkarysharks",
+    "howrareis_id": "shkarysharks"
   },
   {
+    "name": "rareDon",
     "magiceden_id": "raredon",
-    "hyperspace_id": "raredon"
+    "hyperspace_id": "raredon",
+    "howrareis_id": "raredon"
   },
   {
+    "name": "SolDads",
     "magiceden_id": "soldads",
-    "hyperspace_id": "soldads"
+    "hyperspace_id": "soldads",
+    "howrareis_id": "soldads"
   },
   {
+    "name": "",
     "magiceden_id": "infected_gang_members_",
-    "hyperspace_id": "infectedgangmembers"
+    "hyperspace_id": "infectedgangmembers",
+    "howrareis_id": ""
   },
   {
+    "name": "ArtMonkees",
     "magiceden_id": "artmonkees",
-    "hyperspace_id": "artmonkees"
+    "hyperspace_id": "artmonkees",
+    "howrareis_id": "artmonkees"
   },
   {
+    "name": "Cozy Cubs",
     "magiceden_id": "cozy_cubs",
-    "hyperspace_id": "cozycubs"
+    "hyperspace_id": "cozycubs",
+    "howrareis_id": "cozycubs"
   },
   {
+    "name": "",
     "magiceden_id": "mob_monkiez",
-    "hyperspace_id": "mobmonkiez"
+    "hyperspace_id": "mobmonkiez",
+    "howrareis_id": ""
   },
   {
+    "name": "",
     "magiceden_id": "degenerate_trash_pandas",
-    "hyperspace_id": "degentrashpandas"
+    "hyperspace_id": "degentrashpandas",
+    "howrareis_id": ""
   },
   {
+    "name": "Bohemia",
     "magiceden_id": "bohemia_",
-    "hyperspace_id": "bohemia"
+    "hyperspace_id": "bohemia",
+    "howrareis_id": "bohemia"
   },
   {
+    "name": "Fearless Bulls Club",
     "magiceden_id": "fearless_bulls_club",
-    "hyperspace_id": "fearlessbullsclub"
+    "hyperspace_id": "fearlessbullsclub",
+    "howrareis_id": "fearlessbullsclub"
   },
   {
+    "name": "",
     "magiceden_id": "babyapepixelclub",
-    "hyperspace_id": "babyapepixelclub"
+    "hyperspace_id": "babyapepixelclub",
+    "howrareis_id": ""
   },
   {
+    "name": "",
     "magiceden_id": "babyapepixelclub",
-    "hyperspace_id": "babyapepixelclub"
+    "hyperspace_id": "babyapepixelclub",
+    "howrareis_id": ""
   },
   {
+    "name": "Okay Cubs",
     "magiceden_id": "okay_cubs",
-    "hyperspace_id": "okay_cubs"
+    "hyperspace_id": "okay_cubs",
+    "howrareis_id": "okaycubs"
   },
   {
+    "name": "Critters Cult",
     "magiceden_id": "critters_cult",
-    "hyperspace_id": "6gWkABmdSeZsmcUXdRJDrgxAK95JeFHoo2XbcGCcdzm9"
+    "hyperspace_id": "6gWkABmdSeZsmcUXdRJDrgxAK95JeFHoo2XbcGCcdzm9",
+    "howrareis_id": "critters_cult"
   },
   {
+    "name": "Okay Bears",
     "magiceden_id": "okay_bears",
-    "hyperspace_id": "okaybears"
+    "hyperspace_id": "okaybears",
+    "howrareis_id": "okay_bears"
   },
   {
+    "name": "",
     "magiceden_id": "solluminati",
-    "hyperspace_id": "solluminati"
+    "hyperspace_id": "solluminati",
+    "howrareis_id": ""
   },
   {
+    "name": "The Fracture - SOLgods",
     "magiceden_id": "solgods",
-    "hyperspace_id": "solgods"
+    "hyperspace_id": "solgods",
+    "howrareis_id": "solgods"
   },
   {
+    "name": "",
     "magiceden_id": "solgoths",
-    "hyperspace_id": "FP51G5QKSu11Pa9oRWns67fry2fHv4xV5rVT6gw6iLz5"
+    "hyperspace_id": "FP51G5QKSu11Pa9oRWns67fry2fHv4xV5rVT6gw6iLz5",
+    "howrareis_id": ""
   },
   {
+    "name": "Baby Ape Social Club",
     "magiceden_id": "baby_ape_social_club",
-    "hyperspace_id": "babyapesocialclub"
+    "hyperspace_id": "babyapesocialclub",
+    "howrareis_id": "babyapesocialclub"
   },
   {
+    "name": "Sachi",
     "magiceden_id": "sachi",
-    "hyperspace_id": "7FxA4vKrpFLuBFizy317oDhV7ZYbu3YFf3GdKDKWj7Ts"
+    "hyperspace_id": "7FxA4vKrpFLuBFizy317oDhV7ZYbu3YFf3GdKDKWj7Ts",
+    "howrareis_id": "sachi"
   },
   {
+    "name": "ASTRALS",
     "magiceden_id": "astrals",
-    "hyperspace_id": "astrals"
+    "hyperspace_id": "astrals",
+    "howrareis_id": "astrals"
   },
   {
+    "name": "The Bridged",
     "magiceden_id": "the_bridged",
-    "hyperspace_id": "thebridged"
+    "hyperspace_id": "thebridged",
+    "howrareis_id": "thebridged"
   },
   {
+    "name": "",
     "magiceden_id": "turnt_up_chieftains",
-    "hyperspace_id": "turntupchieftains"
+    "hyperspace_id": "turntupchieftains",
+    "howrareis_id": ""
   },
   {
+    "name": "Fuji Lions",
     "magiceden_id": "fuji_lions",
-    "hyperspace_id": "fujilions"
+    "hyperspace_id": "fujilions",
+    "howrareis_id": "fujilions"
   },
   {
+    "name": "Dragon Slayerz",
     "magiceden_id": "dragon_slayerz",
-    "hyperspace_id": "dragonslayerz"
+    "hyperspace_id": "dragonslayerz",
+    "howrareis_id": "dragonslayerz"
   },
   {
+    "name": "Cat Cartel",
     "magiceden_id": "cat_cartel",
-    "hyperspace_id": "catcartel"
+    "hyperspace_id": "catcartel",
+    "howrareis_id": "catcartel"
   },
   {
+    "name": "Sovana Mounts",
     "magiceden_id": "sovanamounts",
-    "hyperspace_id": "sovanamounts"
+    "hyperspace_id": "sovanamounts",
+    "howrareis_id": "sovanamounts"
   },
   {
+    "name": "",
     "magiceden_id": "mekavoyagers",
-    "hyperspace_id": "2ES1qKAefnurCaLaHbmR1jYRwX4hrYfut7kCsyepFejq"
+    "hyperspace_id": "2ES1qKAefnurCaLaHbmR1jYRwX4hrYfut7kCsyepFejq",
+    "howrareis_id": ""
   },
   {
+    "name": "",
     "magiceden_id": "solboysummer",
-    "hyperspace_id": "2SwiCS7dA8uv892wEaBxDNbn7Re5t1eHsWzKpXEsqSTu"
+    "hyperspace_id": "2SwiCS7dA8uv892wEaBxDNbn7Re5t1eHsWzKpXEsqSTu",
+    "howrareis_id": ""
   },
   {
+    "name": "",
     "magiceden_id": "solgirlsummer",
-    "hyperspace_id": "ARrZztmCkEJJEMKtaZF8wq773xCR9X8gbwqn66TX8EUD"
+    "hyperspace_id": "ARrZztmCkEJJEMKtaZF8wq773xCR9X8gbwqn66TX8EUD",
+    "howrareis_id": ""
   },
   {
+    "name": "",
     "magiceden_id": "moonland_metaverse",
-    "hyperspace_id": "DV7YphsYthPhR3d4VLWXuufYY8cL4EZweg89ruTcqnYC"
+    "hyperspace_id": "DV7YphsYthPhR3d4VLWXuufYY8cL4EZweg89ruTcqnYC",
+    "howrareis_id": ""
   },
   {
+    "name": "",
     "magiceden_id": "unq_universe",
-    "hyperspace_id": "unquniverse"
+    "hyperspace_id": "unquniverse",
+    "howrareis_id": ""
   },
   {
+    "name": "",
     "magiceden_id": "unq_universe",
-    "hyperspace_id": "unquniverse"
+    "hyperspace_id": "unquniverse",
+    "howrareis_id": ""
   },
   {
+    "name": "",
     "magiceden_id": "unq_universe",
-    "hyperspace_id": "unquniverse"
+    "hyperspace_id": "unquniverse",
+    "howrareis_id": ""
+  },
+  {
+    "name": "",
+    "magiceden_id": "relics_lab",
+    "hyperspace_id": "relicslab",
+    "howrareis_id": ""
+  },
+  {
+    "name": "GhostKidDAO",
+    "magiceden_id": "ghost_kid_dao",
+    "hyperspace_id": "ghost_kid_dao",
+    "howrareis_id": "ghost_kid_dao"
+  },
+  {
+    "name": "",
+    "magiceden_id": "gkd_potions",
+    "hyperspace_id": "AwBUaUdzyCxth5p9w8bEyNXumjfHAWx7g3z5SaU3toay",
+    "howrareis_id": ""
+  },
+  {
+    "name": "Hello Pantha",
+    "magiceden_id": "hello_pantha",
+    "hyperspace_id": "eacLHftxPd5a6mw4Ba6QNUuufgjHH9B5uSCFbRHajzM",
+    "howrareis_id": "hellopantha"
+  },
+  {
+    "name": "Sovana",
+    "magiceden_id": "sovana",
+    "hyperspace_id": "sovana",
+    "howrareis_id": "sovana"
+  },
+  {
+    "name": "SolStein",
+    "magiceden_id": "solstein",
+    "hyperspace_id": "solstein",
+    "howrareis_id": "solstein"
+  },
+  {
+    "name": "",
+    "magiceden_id": "fractals",
+    "hyperspace_id": "fractals",
+    "howrareis_id": ""
   }
 ]

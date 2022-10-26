@@ -202,33 +202,33 @@ const fetch_nfts: Handler = async (req: Request, res: Response) => {
     take: page_size,
   });
 
-  return response.ok("Holdings", serialize(nfts));
+  // return response.ok("Holdings", serialize(nfts));
 
-  // const nft_count = await prisma.nft_master.count({
-  //   where: {
-  //     collection_id,
-  //     holders: {
-  //       some: {
-  //         balance: {
-  //           gt: 0,
-  //         },
-  //         Holder: {
-  //           user_id: req.user.user_id,
-  //           status: "active",
-  //         },
-  //       },
-  //     }
-  //   }
-  // })
+  const nft_count = await prisma.nft_master.count({
+    where: {
+      collection_id,
+      holders: {
+        some: {
+          balance: {
+            gt: 0,
+          },
+          Holder: {
+            user_id: req.user.user_id,
+            status: "active",
+          },
+        },
+      },
+    },
+  });
 
-  // return response.ok("Holdings", {
-  //   nfts: serialize(nfts),
-  //   pagination: {
-  //     page_number,
-  //     page_size,
-  //     total_pages: Math.ceil(nft_count / page_size)
-  //   }
-  // });
+  return response.ok("Holdings", {
+    nfts: serialize(nfts),
+    pagination: {
+      page_number,
+      page_size,
+      total_pages: Math.ceil(nft_count / page_size),
+    },
+  });
 };
 
 interface FetchActivityParams {
@@ -293,8 +293,20 @@ const fetch_pnl: Handler = async (req: Request, res: Response) => {
   const sum_unrealized =
     await prisma.$queryRaw`SELECT SUM(difference) FROM daily_value_unrealized_view WHERE user_id = ${req.user.user_id}`;
 
-  const history_realized =
-    await prisma.$queryRaw`SELECT * FROM daily_value_realized_view`;
+  const history_realized = await prisma.daily_value_realized_view.findMany({
+    where: {
+      user_id: req.user.user_id,
+    },
+  });
+
+  const sum_realized = await prisma.daily_value_realized_view.aggregate({
+    _sum: {
+      profit: true,
+    },
+  });
+
+  // const history_realized =
+  //   await prisma.$queryRaw`SELECT * FROM daily_value_realized_view`;
   // const sum_realized =
   //   await prisma.$queryRaw`SELECT SUM(difference) FROM daily_value_realized_view WHERE user_id = ${req.user.user_id}`;
 
@@ -306,7 +318,7 @@ const fetch_pnl: Handler = async (req: Request, res: Response) => {
         history: history_unrealized,
       },
       realized: {
-        // sum: (sum_realized as any)[0].sum,
+        sum: sum_realized._sum.profit,
         history: history_realized,
       },
     })

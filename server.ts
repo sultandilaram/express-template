@@ -3,7 +3,7 @@ import dotenv from "dotenv";
 import cors from "cors";
 import routes from "./src/controller";
 import morgan from "morgan";
-import { resolveCollectionIds } from "./src/helpers";
+import { ETL } from "./src/helpers";
 
 // COLORIZE CONSOLE
 const colors = require("colors");
@@ -44,7 +44,7 @@ app.use("/", routes);
 
 // SCHEDULE CRON JOBS
 // crons();
-resolveCollectionIds();
+// ETL();
 
 // STATING SERVER
 app.listen(port, () => {

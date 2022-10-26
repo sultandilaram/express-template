@@ -275,3 +275,15 @@ model wallet_holdings_txn {
 
   // wallet_master wallet_master? @relation(name: "walletTxn", fields: [wallet_address], references: [wallet_address])
 }
+
+model daily_value_realized_view {
+  user_id      Int
+  wallet       String   @db.VarChar(80)
+  mint_address String   @db.VarChar(80)
+  open_time    DateTime @db.Timestamp(6)
+  close_time   DateTime @db.Timestamp(6)
+  // duration     Int
+  profit       BigInt
+
+  @@id([user_id, wallet, mint_address])
+}

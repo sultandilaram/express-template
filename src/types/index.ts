@@ -21,6 +21,8 @@ export interface Token {
 }
 
 export interface LocalCollection {
+  name: string;
   magiceden_id: string;
   hyperspace_id: string;
+  howrareis_id: string;
 }
