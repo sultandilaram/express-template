@@ -27,6 +27,8 @@ const fetch_collections: Handler = async (req: Request, res: Response) => {
   const page_size = p ? parseInt(p) : 10;
   const page_number = n ? parseInt(n) : 1;
 
+  const cached_collections = getCollections();
+
   if (req.user) {
     try {
       const collections = await prisma.collection_master.findMany({
@@ -92,8 +94,6 @@ const fetch_collections: Handler = async (req: Request, res: Response) => {
         },
       });
 
-      const cached_collections = getCollections();
-
       return response.ok("Collections", {
         collections: serialize(
           collections.map((x) => ({
@@ -128,6 +128,51 @@ const fetch_collections: Handler = async (req: Request, res: Response) => {
       return response.notFound("No Collections Found");
 
     try {
+      const maped_collections = collections.getProjectStats.project_stats.map(
+        (x) => ({
+          collection_id: x.project_id,
+          json_str: x.project,
+          howrare_items:
+            cached_collections.find((y) => y.hyperspace_id === x.project_id)
+              ?.howrareis_total_items || 0,
+          collection_floor_stats: [
+            {
+              collection_id: x.project_id,
+              txn_date: new Date(),
+              market_cap: x.market_cap,
+              volume_7day: x.volume_7day,
+              volume_1day: x.volume_1day,
+              volume_1day_change: x.volume_1day_change,
+              floor_price: x.floor_price,
+              floor_price_1day_change: x.floor_price_1day_change,
+              average_price: x.average_price,
+              max_price: x.max_price,
+              supply: x.project?.supply,
+              num_of_token_holders: x.num_of_token_holders,
+              twitter_followers: x.twitter_followers,
+              discord_member: null,
+              average_price_1day_change: x.average_price_1day_change,
+              num_of_token_listed: x.num_of_token_listed,
+              percentage_of_token_listed: x.percentage_of_token_listed,
+              rank: null,
+              created_at: new Date(),
+              last_updated_at: new Date(),
+            },
+          ],
+        })
+      );
+
+      return response.ok("Collections", {
+        collections: maped_collections,
+        pagination: {
+          page_number:
+            collections.getProjectStats.pagination_info.current_page_number,
+          page_size:
+            collections.getProjectStats.pagination_info.current_page_size,
+          total_pages:
+            collections.getProjectStats.pagination_info.total_page_number,
+        },
+      });
     } catch (e) {
       return response.error(undefined, e);
     }
