@@ -67,21 +67,38 @@ const fetch_collections: Handler = async (req: Request, res: Response) => {
       take: page_size,
     });
 
-    return response.ok("Collections", serialize(collections));
+    // return response.ok("Collections", serialize(collections));
 
-    const nft_counts = await prisma.nft_master.groupBy({
-      by: ["collection_id"],
+    const collection_count = await prisma.collection_master.count({
       where: {
-        collection_id: {
-          in: collections.map((x) => x.collection_id),
+        nft_master: {
+          some: {
+            collection_id: {
+              not: null,
+            },
+            holders: {
+              some: {
+                balance: {
+                  gt: 0,
+                },
+                Holder: {
+                  user_id: req.user.user_id,
+                  status: "active",
+                },
+              },
+            },
+          },
         },
       },
-      _count: true,
     });
 
     return response.ok("Collections", {
       collections: serialize(collections),
-      counts: nft_counts,
+      pagination: {
+        page_number,
+        page_size,
+        total_pages: Math.ceil(collection_count / page_size),
+      },
     });
   } else {
     const collections = await hyperspace.getProjects({
@@ -128,7 +145,17 @@ const fetch_collections: Handler = async (req: Request, res: Response) => {
       })
     );
 
-    return response.ok("Collections", maped_collections);
+    return response.ok("Collections", {
+      collections: maped_collections,
+      pagination: {
+        page_number:
+          collections.getProjectStats.pagination_info.current_page_number,
+        page_size:
+          collections.getProjectStats.pagination_info.current_page_size,
+        total_pages:
+          collections.getProjectStats.pagination_info.total_page_number,
+      },
+    });
   }
 };
 

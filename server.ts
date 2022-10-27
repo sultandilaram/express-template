@@ -44,7 +44,7 @@ app.use("/", routes);
 
 // SCHEDULE CRON JOBS
 // crons();
-ETL();
+// ETL();
 
 // STATING SERVER
 app.listen(port, () => {
