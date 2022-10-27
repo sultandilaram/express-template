@@ -27,8 +27,12 @@ export const auth: Handler = async (
   ) {
     const decoded = verify_token(req.headers.authorization.split(" ")[1]);
     if (!decoded) return response.unauthorized("Invalid Token");
-    req.user = await fetchUser(decoded.user_id);
-    next();
+    try {
+      req.user = await fetchUser(decoded.user_id);
+      next();
+    } catch {
+      return response.unauthorized("Invalid Token");
+    }
   } else {
     return response.unauthorized("Token not found");
   }
@@ -47,7 +51,9 @@ export const bypass_auth: Handler = async (
   ) {
     const decoded = verify_token(req.headers.authorization.split(" ")[1]);
     if (!decoded) return response.unauthorized("Invalid Token");
-    req.user = await fetchUser(decoded.user_id);
+    try {
+      req.user = await fetchUser(decoded.user_id);
+    } catch (e) {}
   }
 
   next();

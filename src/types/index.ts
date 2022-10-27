@@ -25,4 +25,5 @@ export interface LocalCollection {
   magiceden_id: string;
   hyperspace_id: string;
   howrareis_id: string;
+  howrareis_total_items: number;
 }

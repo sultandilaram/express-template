@@ -120,6 +120,7 @@ const getNFTMasterCollectionIds = async (
             magiceden_id,
             hyperspace_id,
             howrareis_id: "",
+            howrareis_total_items: 0,
           });
         }
       }
@@ -183,25 +184,24 @@ const resolveCachedCollectionIds = async () => {
           (x) => x.me_key === collection.magiceden_id
         );
 
-        const name =
-          collection.name ||
-          (howrareis_collection ? howrareis_collection.name : "");
+        const name = collection.name || howrareis_collection?.name || "";
 
-        let hyperspace_id = collection.hyperspace_id;
-        if (!!!hyperspace_id) {
-          hyperspace_id =
-            (await getHyperspaceIdByMagicedenId(collection.magiceden_id)) || "";
-        }
+        const hyperspace_id =
+          collection.hyperspace_id ||
+          (await getHyperspaceIdByMagicedenId(collection.magiceden_id)) ||
+          "";
 
         const howrareis_id =
-          collection.howrareis_id ||
-          (howrareis_collection ? howrareis_collection.url?.slice(1) : "");
+          collection.howrareis_id || howrareis_collection?.url?.slice(1) || "";
+
+        const howrareis_total_items = howrareis_collection?.items || 0;
 
         return {
           name,
           magiceden_id: collection.magiceden_id,
           hyperspace_id,
           howrareis_id,
+          howrareis_total_items,
         };
       })
     );
@@ -218,7 +218,7 @@ const resolveCachedCollectionIds = async () => {
     } catch {}
   }
 
-  saveCollections(updated_collections);
+  // saveCollections(updated_collections);
   console.log("[ETL] Updated cached collections:", updated_collections.length);
 };
 
@@ -507,5 +507,5 @@ export default async function () {
   // resolveTokenAccountBalances();
   await resolveCachedCollectionIds();
   // await resolveNFTMasterCollectionIds();
-  resolveIdAndRanksAndTraits();
+  // resolveIdAndRanksAndTraits();
 }
