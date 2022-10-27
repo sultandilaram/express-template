@@ -158,6 +158,9 @@ const fetch_activity: Handler = async (req: Request, res: Response) => {
       where: {
         wallet: wallet_address,
       },
+      include: {
+        Nft: true,
+      },
       skip: page_size * (page_number - 1),
       take: page_size,
     });
