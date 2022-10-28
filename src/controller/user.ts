@@ -30,6 +30,9 @@ const fetch_pnl: Handler = async (req: Request, res: Response) => {
     });
 
     const sum_realized = await prisma.daily_value_realized_view.aggregate({
+      where: {
+        user_id: req.user.user_id,
+      },
       _sum: {
         profit: true,
       },

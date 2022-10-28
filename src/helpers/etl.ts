@@ -504,7 +504,7 @@ const resolveTokenAccountBalances = async () => {
 };
 
 export default async function () {
-  // resolveTokenAccountBalances();
+  resolveTokenAccountBalances();
   // await resolveCachedCollectionIds();
   // await resolveNFTMasterCollectionIds();
   // resolveIdAndRanksAndTraits();
