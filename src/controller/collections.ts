@@ -31,7 +31,7 @@ const fetch_collections: Handler = async (req: Request, res: Response) => {
 
   if (req.user) {
     try {
-      const collections = await prisma.collection_master.findMany({
+      const collectionsTemp = await prisma.collection_master.findMany({
         where: {
           nft_master: {
             some: {
@@ -59,19 +59,90 @@ const fetch_collections: Handler = async (req: Request, res: Response) => {
             },
             take: 1,
           },
-          _count: {
-            select: {
-              nft_master: true,
-            },
-          },
         },
         skip: page_size * (page_number - 1),
         take: page_size,
       });
 
-      // return response.ok("Collections", serialize(collections));
+      const user = req.user;
+      const collections = await Promise.all(
+        collectionsTemp.map(async (c) => {
+          const nft_count = await prisma.nft_master.count({
+            where: {
+              collection_id: c.collection_id,
+              holders: {
+                some: {
+                  balance: {
+                    gt: 0,
+                  },
+                  Holder: {
+                    user_id: user.user_id,
+                    status: "active",
+                  },
+                },
+              },
+            },
+          });
 
-      const collection_count = await prisma.collection_master.count({
+          const collection_holdings_txn =
+            await prisma.wallet_holdings_master.findMany({
+              where: {
+                balance: { gt: 0 },
+                Holder: {
+                  user_id: user.user_id,
+                },
+                Nft: { collection_id: c.collection_id },
+              },
+              select: {
+                Nft: {
+                  select: {
+                    nft_owners_txn: {
+                      where: {
+                        buyer: {
+                          in:
+                            (user.wallet_master
+                              ?.map((x) =>
+                                x.status === "active" ? x.wallet_address : null
+                              )
+                              .filter((x) => !!x) as string[]) || [],
+                        },
+                      },
+                      orderBy: { txn_time: "desc" },
+                      take: 1,
+                      select: {
+                        onchain_price: true,
+                        user_edited_price: true,
+                      },
+                    },
+                  },
+                },
+              },
+            });
+
+          const total_cost = collection_holdings_txn.reduce((sum, x) => {
+            return (
+              sum +
+              parseFloat(
+                x.Nft?.nft_owners_txn[0]?.onchain_price?.toString() ||
+                  x.Nft?.nft_owners_txn[0]?.user_edited_price?.toString() ||
+                  "0"
+              )
+            );
+          }, 0);
+
+          return {
+            ...c,
+            nft_count,
+            total_cost,
+            howrare_items:
+              cached_collections.find(
+                (y) => y.hyperspace_id === c.collection_id
+              )?.howrareis_total_items || 0,
+          };
+        })
+      );
+
+      const total_count = await prisma.collection_master.count({
         where: {
           nft_master: {
             some: {
@@ -95,19 +166,12 @@ const fetch_collections: Handler = async (req: Request, res: Response) => {
       });
 
       return response.ok("Collections", {
-        collections: serialize(
-          collections.map((x) => ({
-            ...x,
-            howrare_items:
-              cached_collections.find(
-                (y) => y.hyperspace_id === x.collection_id
-              )?.howrareis_total_items || 0,
-          }))
-        ),
+        collections: serialize(collections),
+        total_count,
         pagination: {
           page_number,
           page_size,
-          total_pages: Math.ceil(collection_count / page_size),
+          total_pages: Math.ceil(total_count / page_size),
         },
       });
     } catch (e) {
@@ -251,9 +315,7 @@ const fetch_nfts: Handler = async (req: Request, res: Response) => {
       take: page_size,
     });
 
-    // return response.ok("Holdings", serialize(nfts));
-
-    const nft_count = await prisma.nft_master.count({
+    const total_count = await prisma.nft_master.count({
       where: {
         collection_id,
         holders: {
@@ -272,10 +334,11 @@ const fetch_nfts: Handler = async (req: Request, res: Response) => {
 
     return response.ok("Holdings", {
       nfts: serialize(nfts),
+      total_count,
       pagination: {
         page_number,
         page_size,
-        total_pages: Math.ceil(nft_count / page_size),
+        total_pages: Math.ceil(total_count / page_size),
       },
     });
   } catch (e) {

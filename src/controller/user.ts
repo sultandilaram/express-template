@@ -1,10 +1,11 @@
 import { Handler, Response, Router } from "express";
 import _ from "underscore";
-import { prisma } from "../config";
+import { hyperspace, prisma } from "../config";
 import { serialize, ResponseHelper } from "../helpers";
 import { Request } from "../types";
 import { auth, bypass_auth } from "../middlewares";
 import { nft_owners_txn } from "@prisma/client";
+import { MarketplaceActionEnums } from "hyperspace-client-js";
 
 /**
  * @description
@@ -130,7 +131,7 @@ const update_user_price: Handler = async (req: Request, res: Response) => {
   }
 };
 
-interface FetchWalletActivityParams {
+interface FetchActivityParams {
   wallet_address?: string;
   n?: string;
   p?: string;
@@ -141,48 +142,24 @@ interface FetchWalletActivityParams {
  */
 const fetch_activity: Handler = async (req: Request, res: Response) => {
   const response = new ResponseHelper(res);
-  const { wallet_address, n, p } = req.params as FetchWalletActivityParams;
-
-  if (!wallet_address) return response.badRequest("Wallet not provided");
-  if (
-    !req.user ||
-    !req.user.wallet_master ||
-    !req.user.wallet_master
-      .map((x) => x.wallet_address)
-      .includes(wallet_address)
-  )
-    return response.unauthorized();
-
-  const page_size = p ? parseInt(p) : 10;
-  const page_number = n ? parseInt(n) : 1;
+  const { wallet_address, n, p } = req.params as FetchActivityParams;
+  if (!wallet_address)
+    return response.badRequest("Wallet address not provided");
 
   try {
-    const activity = await prisma.nft_owners_txn.findMany({
-      where: {
-        wallet: wallet_address,
+    const data = await hyperspace.getWalletStats({
+      condition: {
+        searchAddress: wallet_address,
       },
-      include: {
-        Nft: true,
-      },
-      skip: page_size * (page_number - 1),
-      take: page_size,
-    });
-
-    const activity_count = await prisma.nft_owners_txn.count({
-      where: {
-        wallet: wallet_address,
+      paginationInfo: {
+        page_number: n ? parseInt(n) : 1,
+        page_size: p ? parseInt(p) : 10,
       },
     });
 
-    return response.ok("Wallet Activity", {
-      activity,
-      pagination: {
-        page_number,
-        page_size,
-        total_pages: Math.ceil(activity_count / page_size),
-      },
-    });
+    return response.ok("Activity", data.getWalletStats.wallet_stats || []);
   } catch (e) {
+    console.error("[API] fetch_activity", e);
     return response.error(undefined, e);
   }
 };
