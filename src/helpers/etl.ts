@@ -152,21 +152,28 @@ const resolveCachedCollectionIds = async () => {
     },
   });
 
-  console.log(`[ETL] Non-cached collections`, db_collections_mints.length);
+  console.log(`[ETL] Non-cached collection mints`, db_collections_mints.length);
 
-  // for (let x of db_collections_mints) {
-  //   if (!x.mint_address) return null;
-  //   const magiceden_id = await getMagicedenIdByMint(x.mint_address);
-  //   if (!magiceden_id) return;
-  //   cached_collections.push({
-  //     name: "",
-  //     magiceden_id,
-  //     hyperspace_id: x.collection_id || "",
-  //     howrareis_id: "",
-  //   });
-  // }
+  for (let i = 0; i < db_collections_mints.length; i++) {
+    const x = db_collections_mints[i];
+    if (!x.mint_address) continue;
+    const magiceden_id = await getMagicedenIdByMint(x.mint_address);
+    if (
+      !magiceden_id ||
+      !!cached_collections.find((x) => x.magiceden_id === magiceden_id)
+    )
+      continue;
+    console.log("[ETL] Cache new collection", magiceden_id);
+    cached_collections.push({
+      name: "",
+      magiceden_id,
+      hyperspace_id: x.collection_id || "",
+      howrareis_id: "",
+      howrareis_total_items: 0,
+    });
+    saveCollections(cached_collections);
+  }
 
-  saveCollections(cached_collections);
   console.log(`[ETL] Updated cached collections`, cached_collections.length);
 
   /// Update hyperspace_id, howrareis_id and name
@@ -209,16 +216,18 @@ const resolveCachedCollectionIds = async () => {
 
   const batchSize = 10;
   let updated_collections: LocalCollection[] = [];
-  for (let i = 0; i < cached_collections.length; i += batchSize) {
+  for (let i = 0; i <= cached_collections.length; i += batchSize) {
     const batch = cached_collections.slice(i, i + batchSize);
     try {
       updated_collections = updated_collections.concat(
         await processBatch(batch)
       );
-    } catch {}
+    } catch {
+      updated_collections = updated_collections.concat(batch);
+    }
   }
 
-  // saveCollections(updated_collections);
+  saveCollections(updated_collections);
   console.log("[ETL] Updated cached collections:", updated_collections.length);
 };
 
@@ -507,5 +516,5 @@ export default async function () {
   resolveTokenAccountBalances();
   // await resolveCachedCollectionIds();
   // await resolveNFTMasterCollectionIds();
-  // resolveIdAndRanksAndTraits();
+  resolveIdAndRanksAndTraits();
 }
