@@ -67,6 +67,23 @@ const fetch_collections: Handler = async (req: Request, res: Response) => {
       const user = req.user;
       const collections = await Promise.all(
         collectionsTemp.map(async (c) => {
+          const nft_count = await prisma.nft_master.count({
+            where: {
+              collection_id: c.collection_id,
+              holders: {
+                some: {
+                  balance: {
+                    gt: 0,
+                  },
+                  Holder: {
+                    user_id: user.user_id,
+                    status: "active",
+                  },
+                },
+              },
+            },
+          });
+
           const collection_holdings_txn =
             await prisma.wallet_holdings_master.findMany({
               where: {
@@ -115,6 +132,7 @@ const fetch_collections: Handler = async (req: Request, res: Response) => {
 
           return {
             ...c,
+            nft_count,
             total_cost,
             howrare_items:
               cached_collections.find(
