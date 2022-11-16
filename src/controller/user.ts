@@ -3,9 +3,7 @@ import _ from "underscore";
 import { hyperspace, prisma } from "../config";
 import { serialize, ResponseHelper } from "../helpers";
 import { Request } from "../types";
-import { auth, bypass_auth } from "../middlewares";
 import { nft_owners_txn } from "@prisma/client";
-import { MarketplaceActionEnums } from "hyperspace-client-js";
 
 /**
  * @description
@@ -164,10 +162,30 @@ const fetch_activity: Handler = async (req: Request, res: Response) => {
   }
 };
 
+/**
+ * @description
+ * Fetch Average Sales and Purchases of the wallet
+ */
+const fetch_avg_prices: Handler = async (req: Request, res: Response) => {
+  const response = new ResponseHelper(res);
+  if (!req.user) return response.unauthorized();
+  const wallet_avg = await prisma.wallet_average_metrics.findFirst({
+    where: {
+      user_id: req.user.user_id,
+    },
+    select: {
+      avg_purchase_price: true,
+      avg_sale_price: true,
+    },
+  });
+  return response.ok("User Average Prices", wallet_avg);
+};
+
 const router = Router();
 
-router.get("/pnl", auth, fetch_pnl);
-router.post("/update_cost", auth, update_user_price);
-router.get("/:wallet_address/activity/:n?/:p?", auth, fetch_activity);
+router.get("/pnl", fetch_pnl);
+router.post("/update_cost", update_user_price);
+router.get("/average_prices", fetch_avg_prices);
+router.get("/:wallet_address/activity/:n?/:p?", fetch_activity);
 
 export default router;

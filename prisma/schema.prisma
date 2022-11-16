@@ -287,3 +287,16 @@ model daily_value_realized_view {
 
   @@id([user_id, wallet, mint_address])
 }
+
+model wallet_average_metrics {
+  user_id               Int
+  avg_purchase_price    Float  @db.DoublePrecision
+  avg_sale_price        Float  @db.DoublePrecision
+  profitable_trades_pct Float  @db.DoublePrecision
+  nft_traded            BigInt
+  ntf_owned             BigInt
+  nft_minted            Int
+  nft_airdropped        Int
+
+  @@id([user_id])
+}
