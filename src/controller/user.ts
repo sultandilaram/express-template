@@ -37,6 +37,20 @@ const fetch_pnl: Handler = async (req: Request, res: Response) => {
       },
     });
 
+    const floor_price = await prisma.daily_floor_price_view.groupBy({
+      by: ["txn_date"],
+      where: {
+        wallet_holdings_master: {
+          Holder: {
+            user_id: req.user.user_id,
+          },
+        },
+      },
+      _sum: {
+        floor_price: true,
+      },
+    });
+
     return response.ok(
       "Pnl",
       serialize({
@@ -48,6 +62,7 @@ const fetch_pnl: Handler = async (req: Request, res: Response) => {
           sum: sum_realized._sum.profit,
           history: history_realized,
         },
+        floor_price,
       })
     );
   } catch (e) {

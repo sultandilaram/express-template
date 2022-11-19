@@ -121,7 +121,7 @@ model wallet_holdings_master {
   wallet_address  String   @db.VarChar(80)
   token_address   String   @db.VarChar(80)
   account_type    String?  @db.VarChar(20)
-  mint_address    String?  @db.VarChar(80)
+  mint_address    String?  @unique @db.VarChar(80)
   decimals        Int?     @db.SmallInt
   balance         BigInt?
   lamports        BigInt?
@@ -129,8 +129,9 @@ model wallet_holdings_master {
   created_at      DateTime @default(now()) @db.Timestamp(6)
   last_updated_at DateTime @default(now()) @db.Timestamp(6)
 
-  Holder wallet_master? @relation(name: "walletHoldings", fields: [wallet_address], references: [wallet_address])
-  Nft    nft_master?    @relation(fields: [mint_address], references: [mint_address])
+  Holder                 wallet_master?           @relation(name: "walletHoldings", fields: [wallet_address], references: [wallet_address])
+  Nft                    nft_master?              @relation(fields: [mint_address], references: [mint_address])
+  daily_floor_price_view daily_floor_price_view[] @relation(name: "daily_floor_price_view")
 
   @@id([user_id, wallet_address, token_address])
 }
@@ -299,4 +300,14 @@ model wallet_average_metrics {
   nft_airdropped        Int
 
   @@id([user_id])
+}
+
+model daily_floor_price_view {
+  token_address String   @unique @db.VarChar(80)
+  txn_date      DateTime @db.Timestamp(6)
+  floor_price   Float    @db.DoublePrecision
+
+  wallet_holdings_master wallet_holdings_master? @relation(name: "daily_floor_price_view", fields: [token_address], references: [mint_address])
+
+  @@id([token_address, txn_date])
 }
